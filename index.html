@@ -1,0 +1,1001 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Midnight Club - Dossier Élève</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Caveat:wght@700&family=Courier+Prime:ital,wght@0,400;0,700;1,400&display=swap');
+
+        :root {
+            --bg-paper: #f4f1e1;
+            --bg-card: #faf8ef;
+            --primary-color: #3b6978;
+            --border-color: #84a59d;
+            --text-main: #333;
+            --text-hand: #111;
+            --red-alert: #d32f2f;
+            --green-ok: #388e3c;
+        }
+
+        body {
+            background-color: var(--bg-paper);
+            font-family: 'Courier Prime', monospace;
+            color: var(--text-main);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .fiche-container {
+            width: 100%;
+            max-width: 900px;
+            background: var(--bg-card);
+            border: 2px solid var(--primary-color);
+            box-shadow: 5px 5px 15px rgba(0,0,0,0.2);
+            padding: 30px;
+            position: relative;
+        }
+
+        /* Effet de trous de classeur */
+        .fiche-container::before {
+            content: '';
+            position: absolute;
+            top: 40px;
+            left: 10px;
+            width: 15px;
+            height: 15px;
+            background: var(--bg-paper);
+            border-radius: 50%;
+            box-shadow: inset 2px 2px 5px rgba(0,0,0,0.3);
+        }
+        .fiche-container::after {
+            content: '';
+            position: absolute;
+            bottom: 40px;
+            left: 10px;
+            width: 15px;
+            height: 15px;
+            background: var(--bg-paper);
+            border-radius: 50%;
+            box-shadow: inset 2px 2px 5px rgba(0,0,0,0.3);
+        }
+
+        .header-title {
+            background-color: var(--primary-color);
+            color: #fff;
+            padding: 10px;
+            text-align: center;
+            font-size: 24px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 20px;
+            border-radius: 3px;
+        }
+
+        .section {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .col {
+            flex: 1;
+            min-width: 300px;
+            background: rgba(255, 255, 255, 0.5);
+            padding: 15px;
+            border: 1px dashed var(--border-color);
+        }
+
+        /* Pile verticale de cadres (colonne de droite) */
+        .col-stack {
+            flex: 1;
+            min-width: 300px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        .col-stack .col {
+            flex: 0 0 auto;
+            min-width: 0;
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--primary-color);
+            margin-bottom: 15px;
+            padding-bottom: 5px;
+        }
+
+        label {
+            font-size: 14px;
+            font-weight: bold;
+            display: block;
+            margin-top: 10px;
+            color: #666;
+            text-transform: uppercase;
+        }
+
+        input[type="text"], input[type="number"], select {
+            width: 100%;
+            background: transparent;
+            border: none;
+            border-bottom: 2px dotted #999;
+            font-family: 'Caveat', cursive;
+            font-size: 22px;
+            color: var(--text-hand);
+            padding: 2px 5px;
+            outline: none;
+            box-sizing: border-box;
+        }
+        
+        input:focus, select:focus {
+            border-bottom: 2px solid var(--primary-color);
+        }
+
+        .stats-box {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 15px;
+            text-align: center;
+            background: #fff;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        .stat-value {
+            font-size: 36px;
+            font-family: 'Caveat', cursive;
+            font-weight: bold;
+        }
+
+        .rouge { color: var(--red-alert); }
+        .vert { color: var(--green-ok); }
+
+        /* Outil Argent (flèches ▲▼) */
+        .argent-tool {
+            display: flex;
+            justify-content: center;
+            gap: 35px;
+            margin: 12px 0 8px;
+        }
+        .argent-stepper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
+        }
+        .arrow-btn {
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            color: var(--primary-color);
+            font-size: 16px;
+            line-height: 1;
+            width: auto;
+            margin: 0;
+            padding: 2px 10px;
+        }
+        .arrow-btn:hover {
+            background: transparent;
+            color: #2a4d59;
+        }
+        .argent-mid {
+            display: flex;
+            align-items: baseline;
+            gap: 3px;
+        }
+        .argent-mid input.argent-input {
+            width: 48px;
+            text-align: center;
+            font-size: 34px;
+            font-family: 'Caveat', cursive;
+            font-weight: bold;
+            color: var(--text-hand);
+            background: transparent;
+            border: none;
+            padding: 0;
+            outline: none;
+        }
+        .argent-input::-webkit-outer-spin-button,
+        .argent-input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+        .argent-input { -moz-appearance: textfield; }
+        .unit-d {
+            font-family: 'Caveat', cursive;
+            font-size: 28px;
+            font-weight: bold;
+            color: #1e88e5;
+        }
+        .unit-c {
+            font-family: 'Caveat', cursive;
+            font-size: 28px;
+            font-weight: bold;
+            color: var(--green-ok);
+        }
+
+        /* Sous-note discrète (sous un titre) */
+        .sub-note {
+            font-size: 11px;
+            color: #999;
+            font-weight: normal;
+            text-transform: none;
+            margin: 2px 0 8px;
+        }
+
+        /* Grandes cases du bulletin (Corps / Esprit) + compétences */
+        .bulletin-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            border-bottom: 2px solid var(--primary-color);
+            margin-bottom: 6px;
+            padding-bottom: 6px;
+        }
+        .bulletin-head .section-title {
+            border: none;
+            margin: 0;
+            padding: 0;
+        }
+        .stereo-select {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+        .emoji-stereo {
+            background: transparent;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            width: auto;
+            margin: 0;
+            padding: 3px 7px;
+            cursor: pointer;
+            font-size: 20px;
+            line-height: 1.1;
+            color: var(--primary-color);
+        }
+        .emoji-stereo:hover { background: rgba(59, 105, 120, 0.08); }
+        .emoji-stereo.active {
+            background: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+        .head-right {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .comp-check {
+            display: none;
+            align-items: center;
+            justify-content: center;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: var(--green-ok);
+            color: #fff;
+            font-size: 18px;
+            font-weight: bold;
+        }
+        .comp-budget { font-weight: bold; color: var(--primary-color); }
+        .comp-budget.over { color: var(--red-alert); }
+        .comp-budget.done { color: var(--green-ok); }
+
+        .bulletin-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+            margin-top: 14px;
+        }
+        .bulletin-grid .stat-block {
+            flex: 0 0 auto;
+            min-width: 0;
+            margin-top: 0;
+        }
+        @media (max-width: 640px) {
+            .bulletin-grid { flex-direction: column; }
+        }
+        .stat-block { margin-top: 18px; }
+        .stat-header {
+            color: #fff;
+            font-family: 'Courier Prime', monospace;
+            font-weight: bold;
+            font-size: 18px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding: 10px 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .stat-header.hdr-corps { background: var(--red-alert); }
+        .stat-header.hdr-esprit { background: #1e88e5; }
+        .stat-points {
+            font-family: 'Caveat', cursive;
+            font-size: 32px;
+            font-weight: bold;
+        }
+        .comp-list {
+            border: 1px solid var(--border-color);
+            border-top: none;
+        }
+        .comp-row {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 5px 14px;
+            border-bottom: 1px dashed var(--border-color);
+            background: rgba(255, 255, 255, 0.55);
+        }
+        .comp-row:last-child { border-bottom: none; }
+        .comp-add {
+            margin-top: 8px;
+            font-size: 13px;
+            padding: 6px 8px;
+        }
+        .comp-row .comp-name {
+            flex: 1;
+            min-width: 0;
+            border: none;
+            background: transparent;
+            font-family: 'Caveat', cursive;
+            font-size: 22px;
+            color: var(--text-hand);
+            outline: none;
+            padding: 0;
+        }
+        .comp-row .comp-plus {
+            font-family: 'Caveat', cursive;
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--green-ok);
+        }
+        .comp-row .comp-val {
+            width: 40px;
+            flex: 0 0 auto;
+            text-align: center;
+            border: none;
+            background: transparent;
+            font-family: 'Caveat', cursive;
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--text-hand);
+            outline: none;
+            padding: 0;
+        }
+        .comp-row .comp-val::-webkit-outer-spin-button,
+        .comp-row .comp-val::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+        .comp-row .comp-val { -moz-appearance: textfield; }
+        .comp-empty {
+            border: 1px dashed var(--border-color);
+            border-top: none;
+            padding: 10px 16px;
+            font-size: 13px;
+            color: #999;
+        }
+
+        /* PV en cœurs SVG */
+        .pv-control {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-top: 6px;
+        }
+        .pv-hearts {
+            flex: 1;
+            min-width: 0;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .heart-btn {
+            flex: 1;
+            background: transparent;
+            border: none;
+            width: auto;
+            margin: 0;
+            padding: 0;
+            cursor: pointer;
+        }
+        .pv-heart {
+            width: 100%;
+            max-width: 56px;
+            height: auto;
+            display: block;
+            margin: 0 auto;
+            transition: transform 0.1s ease;
+        }
+        .pv-control .heart-btn:hover { background: transparent; }
+        .heart-btn:hover .pv-heart { transform: scale(1.08); }
+        .pv-btn {
+            background: transparent;
+            border: 2px solid var(--primary-color);
+            color: var(--primary-color);
+            width: 40px;
+            height: 38px;
+            flex: 0 0 auto;
+            margin: 0;
+            padding: 0;
+            font-size: 20px;
+            font-weight: bold;
+            line-height: 1;
+            cursor: pointer;
+            border-radius: 4px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .pv-btn:hover { background: rgba(59, 105, 120, 0.1); }
+
+        /* Niveau de Stress en ronds */
+        .stress-icons {
+            display: flex;
+            align-items: center;
+            gap: 2px;
+            flex: 1;
+            min-width: 0;
+        }
+        .stress-cell {
+            flex: 1;
+            background: transparent;
+            border: none;
+            width: auto;
+            margin: 0;
+            padding: 8px 0;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .stress-dot {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            opacity: 0.35;
+            transition: all 0.12s ease;
+        }
+        .stress-icons .stress-cell:hover { background: transparent; }
+        .stress-cell:hover .stress-dot { opacity: 0.7; transform: scale(1.2); }
+        .stress-cell.locked { cursor: not-allowed; position: relative; }
+        .stress-cell.locked:hover .stress-dot { opacity: 0.25; transform: none; }
+        .stress-cell.locked .stress-dot { opacity: 0.25; }
+        .lock-x {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: var(--red-alert);
+            font-weight: bold;
+            font-size: 20px;
+            pointer-events: none;
+        }
+        .stress-cell.sel .stress-dot {
+            opacity: 1;
+            width: 26px;
+            height: 26px;
+            box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.18);
+        }
+
+        .jauge-container {
+            width: 100%;
+            margin-top: 20px;
+            background: transparent;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        .stress-value {
+            font-family: 'Caveat', cursive;
+            font-size: 26px;
+            font-weight: bold;
+            line-height: 1;
+        }
+
+        input[type="range"] {
+            width: 90%;
+            accent-color: var(--primary-color);
+            margin: 15px 0;
+        }
+
+        .inventory-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 12px 0;
+            margin-top: 10px;
+        }
+
+        .inventory-table th {
+            text-align: left;
+            font-size: 14px;
+            border-bottom: 2px solid var(--primary-color);
+            color: var(--primary-color);
+            padding-bottom: 5px;
+        }
+
+        .inventory-table td {
+            border-bottom: 1px dotted #999;
+            padding: 6px 0;
+        }
+        /* Pas de double soulignement : seul le segment de la cellule s'affiche */
+        .inventory-table td input,
+        .inventory-table td select {
+            border-bottom: none;
+        }
+
+        /* Nouveaux boutons d'ajout/suppression dynamiques */
+        .add-btn {
+            background: transparent;
+            border: 2px dashed var(--primary-color);
+            color: var(--primary-color);
+            padding: 8px 10px;
+            font-family: 'Courier Prime', monospace;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 10px;
+            font-size: 14px;
+            transition: background 0.2s;
+        }
+
+        .add-btn:hover {
+            background: rgba(59, 105, 120, 0.1);
+        }
+
+        .del-btn {
+            background: transparent;
+            border: none;
+            color: var(--red-alert);
+            font-weight: bold;
+            font-family: 'Courier Prime', monospace;
+            cursor: pointer;
+            font-size: 18px;
+            padding: 0 5px;
+            width: auto;
+            flex: 0 0 auto;
+            margin-top: 0;
+        }
+        
+        .del-btn:hover {
+            color: #a00;
+        }
+
+        button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-family: 'Courier Prime', monospace;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 15px;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background-color: #2a4d59;
+        }
+
+        /* === Calques d'ambiance (Niveau de Stress) === */
+        #fx-vignette {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 9000;
+            opacity: 0;
+            transition: opacity 0.45s ease;
+            background: radial-gradient(ellipse at center,
+                rgba(0,0,0,0) 42%,
+                rgba(0,0,0,0.55) 78%,
+                rgba(0,0,0,0.92) 100%);
+        }
+        #fx-particles {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 9001;
+            overflow: hidden;
+        }
+        .particle {
+            position: absolute;
+            bottom: -16px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 50% 50%,
+                rgba(255,251,230,0.85) 0%,
+                rgba(255,216,107,0.45) 30%,
+                rgba(255,190,80,0.12) 60%,
+                rgba(255,180,60,0) 80%);
+            box-shadow: 0 0 22px 10px rgba(255, 214, 110, 0.40);
+            filter: blur(2.5px);
+            animation-name: floatUp;
+            animation-timing-function: ease-in-out;
+            animation-fill-mode: forwards;
+            will-change: transform, opacity;
+        }
+        @keyframes floatUp {
+            0%   { transform: translate(0, 0) scale(0.5); opacity: 0; }
+            8%   { opacity: 1; }
+            50%  { transform: translate(var(--sway), -52vh) scale(1); }
+            88%  { opacity: 1; }
+            100% { transform: translate(var(--drift), -108vh) scale(0.6); opacity: 0; }
+        }
+
+    </style>
+</head>
+<body>
+
+<div class="fiche-container">
+    <div class="header-title">Dossier Élève - Shadow Creek</div>
+
+    <div class="section">
+        <!-- Colonne gauche : Profil / État / Porte-monnaie -->
+        <div class="col-stack">
+
+            <!-- Profil -->
+            <div class="col">
+                <div class="section-title">Profil</div>
+                <label>Nom du Personnage</label>
+                <input type="text" placeholder="Ex: Timmy">
+
+                <label>Âge</label>
+                <input type="number" placeholder="Ex: 14">
+            </div>
+
+            <!-- État : Vie + Terreur -->
+            <div class="col">
+                <div class="section-title">État</div>
+
+                <label>Points de Vie (PV)</label>
+                <div class="pv-control">
+                    <button class="pv-btn" onclick="changePV(-1)" aria-label="Retirer un PV">−</button>
+                    <span id="pv-hearts" class="pv-hearts"></span>
+                    <button class="pv-btn" onclick="changePV(1)" aria-label="Ajouter un PV">+</button>
+                </div>
+
+                <div class="jauge-container" style="margin-top:18px;">
+                    <label>Niveau de Stress</label>
+                    <div class="pv-control">
+                        <button class="pv-btn" onclick="stepStress(-1)" title="Vers la terreur">👻</button>
+                        <div id="stress-icons" class="stress-icons"></div>
+                        <button class="pv-btn" onclick="stepStress(1)" title="Vers le courage">🦁</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Porte-monnaie -->
+            <div class="col">
+                <div class="section-title">Porte-monnaie</div>
+                <div class="argent-tool">
+                    <div class="argent-stepper">
+                        <button class="arrow-btn" onclick="stepArgent('d', 1)" aria-label="Augmenter les dollars">▲</button>
+                        <div class="argent-mid">
+                            <input type="number" id="stat-argent-d" class="argent-input" min="0" value="0"><span class="unit-d">$</span>
+                        </div>
+                        <button class="arrow-btn" onclick="stepArgent('d', -1)" aria-label="Diminuer les dollars">▼</button>
+                    </div>
+                    <div class="argent-stepper">
+                        <button class="arrow-btn" onclick="stepArgent('c', 1)" aria-label="Augmenter les cents">▲</button>
+                        <div class="argent-mid">
+                            <input type="number" id="stat-argent-c" class="argent-input" min="0" max="99" value="0"><span class="unit-c">¢</span>
+                        </div>
+                        <button class="arrow-btn" onclick="stepArgent('c', -1)" aria-label="Diminuer les cents">▼</button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Colonne droite : Bulletin (Corps puis Esprit) -->
+        <div class="col">
+            <div class="bulletin-head">
+                <div class="section-title">Bulletin — 1er Trimestre 1984</div>
+                <div class="head-right">
+                    <div class="stereo-select">
+                        <button class="emoji-stereo" onclick="selectStereo('sportif', this)" title="Sportif">👟</button>
+                        <button class="emoji-stereo" onclick="selectStereo('intello', this)" title="Intello">🧠</button>
+                        <button class="emoji-stereo" onclick="selectStereo('nanti', this)" title="Nanti">🎩</button>
+                        <button class="emoji-stereo" onclick="selectStereo('rue', this)" title="Gosse des rues">🛹</button>
+                        <button class="emoji-stereo" onclick="selectStereo('gothique', this)" title="Gothique">🕷️</button>
+                        <button class="emoji-stereo" onclick="selectStereo('geek', this)" title="Geek">💾</button>
+                    </div>
+                    <span id="comp-check" class="comp-check" title="Budget de compétences atteint">✓</span>
+                </div>
+            </div>
+            <div class="sub-note">Répartis tes points de compétence entre Corps et Esprit — <span id="comp-budget" class="comp-budget">0 / 3</span></div>
+            <div class="bulletin-grid">
+                <div id="bulletin-corps" class="stat-block"></div>
+                <div id="bulletin-esprit" class="stat-block"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Inventaire limité -->
+    <div class="section">
+        <div class="col">
+            <div class="section-title">Sac à Dos</div>
+            <table class="inventory-table">
+                <thead>
+                    <tr>
+                        <th style="width: 40%">Objet / Arme</th>
+                        <th style="width: 20%">Qualité (Dé)</th>
+                        <th style="width: 35%">Effet / Stat</th>
+                        <th style="width: 5%"></th>
+                    </tr>
+                </thead>
+                <tbody id="inventory-body">
+                    <tr>
+                        <td><input type="text" placeholder="Ex: Batte de Baseball"></td>
+                        <td>
+                            <select>
+                                <option>-</option><option>D4</option><option>D6</option><option>D8</option><option>D10</option><option>D12</option>
+                            </select>
+                        </td>
+                        <td><input type="text" placeholder="Arme"></td>
+                        <td style="text-align: center;"><button class="del-btn" onclick="this.closest('tr').remove()" title="Jeter l'objet">✗</button></td>
+                    </tr>
+                </tbody>
+            </table>
+            <button class="add-btn" onclick="addInventoryRow()">+ Ajouter un objet au sac</button>
+        </div>
+    </div>
+
+</div>
+
+<!-- Calques d'ambiance pilotés par le Niveau de Stress -->
+<div id="fx-vignette" aria-hidden="true"></div>
+<div id="fx-particles" aria-hidden="true"></div>
+
+<script>
+    // === Niveau de Stress : vignette (terreur) + particules (courage) ===
+    let stress = 0;
+    let lockedStress = new Set(); // niveaux verrouillés (ex. Gothique : -5)
+
+    function applyStressFx() {
+        document.getElementById('fx-vignette').style.opacity =
+            stress < 0 ? Math.min(1, Math.abs(stress) / 5).toFixed(2) : 0;
+    }
+    function renderStress() {
+        const c = document.getElementById('stress-icons');
+        let html = '';
+        for (let i = -5; i <= 5; i++) {
+            const sel = (i === stress) ? ' sel' : '';
+            if (lockedStress.has(i)) {
+                const color = (i < 0) ? '#8e24aa' : '#fb8c00';
+                html += `<button class="stress-cell locked" onclick="setStress(${i})" title="Verrouillé — habitué à la mort"><span class="stress-dot" style="background:${color}"></span><span class="lock-x">✗</span></button>`;
+            } else if (i === 0) {
+                // Centre de la jauge : la valeur du modificateur
+                const valColor = stress > 0 ? '#fb8c00' : (stress < 0 ? '#8e24aa' : '#777');
+                const valTxt = stress > 0 ? '+' + stress : stress;
+                html += `<button class="stress-cell${sel}" onclick="setStress(0)" title="Neutre"><span class="stress-value" style="color:${valColor}">${valTxt}</span></button>`;
+            } else {
+                const color = (i < 0) ? '#8e24aa' : '#fb8c00'; // violet terreur / orange courage
+                const lbl = (i > 0 ? '+' + i : i);
+                html += `<button class="stress-cell${sel}" onclick="setStress(${i})" title="${lbl}"><span class="stress-dot" style="background:${color}"></span></button>`;
+            }
+        }
+        c.innerHTML = html;
+    }
+    function setStress(v) {
+        if (lockedStress.has(v)) return; // niveau verrouillé : on ignore
+        stress = v;
+        applyStressFx();
+        renderStress();
+    }
+    function stepStress(delta) {
+        let v = stress + delta;
+        if (v < -5) v = -5;
+        if (v > 5) v = 5;
+        if (lockedStress.has(v)) return; // bloqué par le verrou
+        setStress(v);
+    }
+
+    function spawnParticle() {
+        const layer = document.getElementById('fx-particles');
+        const p = document.createElement('div');
+        p.className = 'particle';
+        const size = 7 + Math.random() * 11;
+        p.style.width = size + 'px';
+        p.style.height = size + 'px';
+        p.style.left = (Math.random() * window.innerWidth) + 'px';
+        p.style.setProperty('--sway', (Math.random() * 80 - 40) + 'px');
+        p.style.setProperty('--drift', (Math.random() * 160 - 80) + 'px');
+        const dur = 4 + Math.random() * 4;
+        p.style.animationDuration = dur + 's';
+        layer.appendChild(p);
+        setTimeout(() => p.remove(), dur * 1000 + 300);
+    }
+
+    // Boucle d'ambiance : plus le courage est haut, plus il y a de particules
+    setInterval(() => {
+        if (stress <= 0) return;
+        const count = Math.ceil(stress / 2);
+        for (let i = 0; i < count; i++) spawnParticle();
+    }, 230);
+
+    // Incrément/décrément de l'argent via les flèches ▲▼
+    function stepArgent(which, delta) {
+        const el = document.getElementById(which === 'd' ? 'stat-argent-d' : 'stat-argent-c');
+        let v = (parseInt(el.value) || 0) + delta;
+        if (v < 0) v = 0;
+        if (which === 'c' && v > 99) v = 99;
+        el.value = v;
+    }
+
+    // Points de Vie en cœurs SVG
+    let pv = 10;
+    function svgHeart(filled) {
+        const fill = filled ? 'var(--red-alert)' : 'none';
+        const stroke = filled ? 'var(--red-alert)' : '#c9c2b4';
+        return `<svg viewBox="0 0 24 24" class="pv-heart" aria-hidden="true"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" fill="${fill}" stroke="${stroke}" stroke-width="1.6"/></svg>`;
+    }
+    function renderPV() {
+        const c = document.getElementById('pv-hearts');
+        let html = '';
+        for (let i = 0; i < 10; i++) {
+            html += `<button class="heart-btn" onclick="setPV(${i + 1})" title="${i + 1} PV">${svgHeart(i < pv)}</button>`;
+        }
+        c.innerHTML = html;
+    }
+    function setPV(n) {
+        pv = (pv === n) ? n - 1 : n; // re-cliquer le dernier cœur plein le retire
+        if (pv < 0) pv = 0;
+        if (pv > 10) pv = 10;
+        renderPV();
+    }
+    function changePV(delta) {
+        pv += delta;
+        if (pv < 0) pv = 0;
+        if (pv > 10) pv = 10;
+        renderPV();
+    }
+
+    // MAJ Statistiques selon Stéréotype (piloté par le sélecteur d'émoji)
+    let currentStereo = "";
+    function selectStereo(value, btn) {
+        currentStereo = value;
+        document.querySelectorAll('.emoji-stereo').forEach(b => b.classList.remove('active'));
+        if (btn) btn.classList.add('active');
+        updateStats();
+    }
+    function updateStats() {
+        const stereotype = currentStereo;
+        let corps = 0, esprit = 0, dollars = 0, cents = 0;
+
+        if (stereotype === "intello") { corps = 3; esprit = 5; dollars = 10; }
+        else if (stereotype === "sportif") { corps = 5; esprit = 3; dollars = 10; }
+        else if (stereotype === "nanti") { corps = 3; esprit = 3; dollars = 20; }
+        else if (stereotype === "rue") { corps = 5; esprit = 5; dollars = 5; }
+        else if (stereotype === "gothique") { corps = 4; esprit = 3; dollars = 10; }
+        else if (stereotype === "geek") { corps = 3; esprit = 4; dollars = 10; }
+
+        // Verrous de la jauge de stress selon le stéréotype
+        if (stereotype === "gothique") lockedStress = new Set([-5]);   // habitué à la mort
+        else if (stereotype === "geek") lockedStress = new Set([5]);   // jamais vraiment courageux
+        else lockedStress = new Set();
+        if (lockedStress.has(stress)) stress += (stress < 0 ? 1 : -1); // on quitte le cran verrouillé
+        applyStressFx();
+        renderStress();
+
+        // Budget de compétences : le geek en a 5, les autres 3
+        budget = (stereotype === "geek") ? 5 : 3;
+
+        statValue.corps = corps;
+        statValue.esprit = esprit;
+        document.getElementById("stat-argent-d").value = dollars;
+        document.getElementById("stat-argent-c").value = cents;
+        renderBulletin();
+    }
+
+    // === Bulletin ===
+    // En-tête +Corps / +Esprit = valeur du stéréotype (INDÉPENDANTE des compétences).
+    // Compétences : créées librement dans Corps et/ou Esprit, budget total de 3 points.
+    function escapeHtml(s) {
+        return String(s).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;');
+    }
+    let budget = 3;
+    let statValue = { corps: 0, esprit: 0 };
+    const comps = { corps: [], esprit: [] };
+    const blockMeta = {
+        corps:  { id: 'bulletin-corps',  label: 'Corps',  hdr: 'hdr-corps' },
+        esprit: { id: 'bulletin-esprit', label: 'Esprit', hdr: 'hdr-esprit' }
+    };
+
+    // Recopie les saisies du DOM vers l'état avant chaque re-rendu
+    function syncComps() {
+        ['corps', 'esprit'].forEach(key => {
+            const c = document.getElementById(blockMeta[key].id);
+            const names = Array.from(c.querySelectorAll('.comp-name'));
+            const vals = Array.from(c.querySelectorAll('.comp-val'));
+            for (let i = 0; i < comps[key].length; i++) {
+                if (names[i]) comps[key][i].name = names[i].value;
+                if (vals[i]) comps[key][i].val = vals[i].value;
+            }
+        });
+    }
+    function totalPoints() {
+        let t = 0;
+        ['corps', 'esprit'].forEach(k => comps[k].forEach(c => { t += parseInt(c.val) || 0; }));
+        return t;
+    }
+    function updateBudget() {
+        const t = totalPoints();
+        const counter = document.getElementById('comp-budget');
+        counter.textContent = `${t} / ${budget}`;
+        counter.classList.toggle('over', t > budget);
+        counter.classList.toggle('done', t === budget);
+        document.getElementById('comp-check').style.display = (t === budget) ? 'flex' : 'none';
+    }
+    function renderBlock(key) {
+        const m = blockMeta[key];
+        let html = `<div class="stat-header ${m.hdr}">${m.label}<span class="stat-points">+${statValue[key]}</span></div>`;
+        html += '<div class="comp-list">';
+        if (comps[key].length === 0) {
+            html += '<div class="comp-empty">Aucune compétence.</div>';
+        } else {
+            comps[key].forEach((it, i) => {
+                html += `<div class="comp-row">`
+                     + `<input type="text" class="comp-name" placeholder="Compétence" value="${escapeHtml(it.name)}">`
+                     + `<span class="comp-plus">+</span>`
+                     + `<input type="number" class="comp-val" min="0" value="${escapeHtml(it.val)}" oninput="onCompChange()">`
+                     + `<button class="del-btn" onclick="delComp('${key}', ${i})" title="Retirer la compétence">✗</button>`
+                     + `</div>`;
+            });
+        }
+        html += '</div>';
+        html += `<button class="add-btn comp-add" onclick="addComp('${key}')">+ Ajouter une compétence</button>`;
+        document.getElementById(m.id).innerHTML = html;
+    }
+    function renderBulletin() {
+        renderBlock('corps');
+        renderBlock('esprit');
+        updateBudget();
+    }
+    // Mise à jour du budget en direct pendant la saisie (sans re-rendu, garde le focus)
+    function onCompChange() {
+        syncComps();
+        updateBudget();
+    }
+    function addComp(key) {
+        syncComps();
+        comps[key].push({ name: '', val: '0' });
+        renderBulletin();
+    }
+    function delComp(key, idx) {
+        syncComps();
+        comps[key].splice(idx, 1);
+        renderBulletin();
+    }
+
+    // Ajout dynamique d'Objet dans le Sac à Dos
+    function addInventoryRow() {
+        const tbody = document.getElementById('inventory-body');
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td><input type="text" placeholder="Nouvel objet"></td>
+            <td>
+                <select>
+                    <option>-</option><option>D4</option><option>D6</option><option>D8</option><option>D10</option><option>D12</option>
+                </select>
+            </td>
+            <td><input type="text" placeholder="..."></td>
+            <td style="text-align: center;"><button class="del-btn" onclick="this.closest('tr').remove()" title="Jeter l'objet">✗</button></td>
+        `;
+        tbody.appendChild(tr);
+    }
+
+    // Affichage initial des PV
+    renderPV();
+    // Affichage initial du bulletin (vide tant qu'aucun stéréotype)
+    renderBulletin();
+    // Affichage initial du niveau de stress
+    renderStress();
+</script>
+
+</body>
+</html>
