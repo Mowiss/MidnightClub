@@ -1,1001 +1,748 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Midnight Club - Dossier Élève</title>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Caveat:wght@700&family=Courier+Prime:ital,wght@0,400;0,700;1,400&display=swap');
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Midnight Club — Dossier élève</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;700&family=Oswald:wght@400;500;600;700&family=Special+Elite&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#e4dac0;--paper-2:#ddd1b2;--folder:#c8a049;--folder-dark:#a8842f;
+    --ink:#2a2620;--ink-soft:#6b6253;--stamp-red:#9c2a21;--stamp-blue:#34506e;
+    --green-ok:#3f6b34;--line:rgba(42,38,32,.38);--shadow:rgba(40,32,20,.35);
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  body{
+    font-family:"Special Elite","Courier New",monospace;color:var(--ink);
+    background:#3a352c;background-image:radial-gradient(circle at 20% 0%, #45402f 0%, #2c2820 70%);
+    min-height:100vh;padding:26px 14px 60px;line-height:1.35;
+  }
 
-        :root {
-            --bg-paper: #f4f1e1;
-            --bg-card: #faf8ef;
-            --primary-color: #3b6978;
-            --border-color: #84a59d;
-            --text-main: #333;
-            --text-hand: #111;
-            --red-alert: #d32f2f;
-            --green-ok: #388e3c;
-        }
+  .folder{
+    max-width:920px;margin:0 auto;position:relative;background:var(--folder);
+    border-radius:4px 14px 4px 4px;padding:14px 14px 18px;
+    box-shadow:0 22px 50px -18px #000, inset 0 1px 0 rgba(255,255,255,.18);
+  }
+  .tab{
+    position:absolute;top:-26px;left:26px;background:var(--folder);padding:7px 26px 9px;
+    border-radius:10px 10px 0 0;font-family:"Oswald","Arial Narrow",sans-serif;font-weight:600;
+    letter-spacing:.14em;font-size:13px;color:#3a2e10;box-shadow:0 -3px 8px -4px #000;
+  }
+  .tab b{color:#1f1908}
 
-        body {
-            background-color: var(--bg-paper);
-            font-family: 'Courier Prime', monospace;
-            color: var(--text-main);
-            margin: 0;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
+  .sheet{
+    position:relative;overflow:hidden;background:var(--paper);
+    background-image:
+      radial-gradient(circle at 88% 12%, rgba(120,90,40,.10) 0 9px, transparent 11px),
+      radial-gradient(ellipse at 50% 50%, transparent 60%, rgba(60,45,20,.10) 100%);
+    border:1px solid rgba(60,45,20,.25);padding:22px 26px 30px;
+    box-shadow:inset 0 0 60px rgba(80,60,25,.12);
+  }
+  .sheet::before{
+    content:"";position:absolute;inset:0;pointer-events:none;opacity:.5;mix-blend-mode:multiply;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='120' height='120'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/></filter><rect width='100%25' height='100%25' filter='url(%23n)' opacity='0.05'/></svg>");
+  }
+  .sheet::after{
+    content:"";position:absolute;left:-30px;top:118px;width:150px;height:150px;border-radius:50%;
+    pointer-events:none;border:9px solid rgba(110,70,25,.10);
+    box-shadow:inset 0 0 0 5px rgba(110,70,25,.05);transform:rotate(8deg);
+  }
+  .sheet>*{position:relative;z-index:2}
 
-        .fiche-container {
-            width: 100%;
-            max-width: 900px;
-            background: var(--bg-card);
-            border: 2px solid var(--primary-color);
-            box-shadow: 5px 5px 15px rgba(0,0,0,0.2);
-            padding: 30px;
-            position: relative;
-        }
+  .confid{
+    position:absolute;top:54px;right:-6px;z-index:3;transform:rotate(11deg);color:var(--stamp-red);
+    border:3px double var(--stamp-red);font-family:"Oswald",sans-serif;font-weight:700;
+    letter-spacing:.16em;font-size:15px;padding:4px 14px;border-radius:3px;opacity:.72;mix-blend-mode:multiply;
+  }
 
-        /* Effet de trous de classeur */
-        .fiche-container::before {
-            content: '';
-            position: absolute;
-            top: 40px;
-            left: 10px;
-            width: 15px;
-            height: 15px;
-            background: var(--bg-paper);
-            border-radius: 50%;
-            box-shadow: inset 2px 2px 5px rgba(0,0,0,0.3);
-        }
-        .fiche-container::after {
-            content: '';
-            position: absolute;
-            bottom: 40px;
-            left: 10px;
-            width: 15px;
-            height: 15px;
-            background: var(--bg-paper);
-            border-radius: 50%;
-            box-shadow: inset 2px 2px 5px rgba(0,0,0,0.3);
-        }
+  .masthead{border-bottom:3px double var(--ink);padding-bottom:10px;margin-bottom:14px}
+  .school{font-family:"Oswald",sans-serif;font-weight:700;letter-spacing:.06em;
+    font-size:clamp(20px,4.4vw,30px);margin:0;color:var(--ink);line-height:1}
+  .sub-row{display:flex;justify-content:space-between;flex-wrap:wrap;gap:6px;margin-top:8px;
+    font-size:12px;color:var(--ink-soft);letter-spacing:.04em}
+  .sub-row .ed{border-bottom:1px dotted var(--line)}
 
-        .header-title {
-            background-color: var(--primary-color);
-            color: #fff;
-            padding: 10px;
-            text-align: center;
-            font-size: 24px;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            margin-bottom: 20px;
-            border-radius: 3px;
-        }
+  [contenteditable]{outline:none}
+  .field{background:transparent;border:none;font-family:inherit;font-size:14px;color:var(--ink);
+    border-bottom:1px dotted var(--line);padding:1px 4px 2px;min-width:40px}
+  .field:focus{border-bottom-color:var(--stamp-blue);background:rgba(52,80,110,.06)}
+  .field::placeholder{color:rgba(80,70,55,.5);font-style:italic}
 
-        .section {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 20px;
-            margin-bottom: 30px;
-        }
+  .grid{display:grid;gap:16px}
+  .two{grid-template-columns:1fr 168px}
+  fieldset.frame{border:1.5px solid var(--ink);border-radius:2px;margin:0;padding:14px 14px 12px;
+    background:rgba(255,250,235,.28)}
+  fieldset.frame>legend{font-family:"Oswald",sans-serif;font-weight:600;letter-spacing:.16em;
+    font-size:12px;text-transform:uppercase;padding:2px 10px;background:var(--ink);color:var(--paper);border-radius:1px}
+  .rowline{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 10px;margin:7px 0}
+  .lbl{font-family:"Oswald",sans-serif;font-weight:500;letter-spacing:.08em;font-size:11px;color:var(--ink-soft)}
 
-        .col {
-            flex: 1;
-            min-width: 300px;
-            background: rgba(255, 255, 255, 0.5);
-            padding: 15px;
-            border: 1px dashed var(--border-color);
-        }
+  .photo-wrap{display:flex;flex-direction:column;gap:6px}
+  .photo{position:relative;aspect-ratio:3/4;width:100%;cursor:pointer;overflow:hidden;
+    background:repeating-linear-gradient(45deg,#cfc4a6,#cfc4a6 7px,#c7bb9c 7px,#c7bb9c 14px);
+    border:1px solid var(--ink-soft);display:flex;align-items:center;justify-content:center}
+  .photo img{width:100%;height:100%;object-fit:cover;display:block;filter:grayscale(.35) contrast(1.05)}
+  .photo .hint{font-size:11px;color:var(--ink-soft);text-align:center;padding:8px;letter-spacing:.05em}
+  .photo .corner{position:absolute;width:14px;height:14px;border:2px solid #5b5343}
+  .photo .corner.tl{top:5px;left:5px;border-right:none;border-bottom:none}
+  .photo .corner.tr{top:5px;right:5px;border-left:none;border-bottom:none}
+  .photo .corner.bl{bottom:5px;left:5px;border-right:none;border-top:none}
+  .photo .corner.br{bottom:5px;right:5px;border-left:none;border-top:none}
+  .photo-cap{font-size:10px;color:var(--stamp-red);text-align:center;letter-spacing:.14em;
+    font-family:"Oswald",sans-serif;font-weight:600;transform:rotate(-2deg)}
 
-        /* Pile verticale de cadres (colonne de droite) */
-        .col-stack {
-            flex: 1;
-            min-width: 300px;
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
-        .col-stack .col {
-            flex: 0 0 auto;
-            min-width: 0;
-        }
+  .pv-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px}
+  .hearts{display:flex;justify-content:space-between;gap:4px;width:100%}
+  .heart{width:26px;height:26px;flex:0 0 auto;cursor:pointer;color:var(--stamp-red);filter:drop-shadow(0 1px 0 rgba(0,0,0,.2))}
+  .heart.empty{color:rgba(80,70,55,.28)}
+  .pvnum{font-family:"Oswald",sans-serif;font-weight:600;font-size:13px}
+  .cran-block{margin-top:12px}
+  .cran-block>.lbl{display:block;margin-bottom:4px}
+  .cran{display:grid;grid-template-columns:repeat(11,1fr);border:1px solid var(--ink-soft);border-radius:2px;overflow:hidden}
+  .cran .tick{padding:6px 0;text-align:center;font-family:"Oswald",sans-serif;font-weight:600;font-size:12px;
+    border-left:1px solid rgba(42,38,32,.25);cursor:pointer;background:rgba(255,255,255,.18);color:var(--ink-soft);user-select:none;transition:background .12s}
+  .cran .tick:first-child{border-left:none}
+  .cran .tick:hover{background:rgba(42,38,32,.12)}
+  .cran .tick.zero{color:var(--ink);font-weight:700;background:rgba(42,38,32,.12)}
+  .cran .tick.neg.on{background:rgba(156,42,33,.5);color:#fff}
+  .cran .tick.pos.on{background:rgba(52,80,110,.55);color:#fff}
+  .cran .tick.cur{box-shadow:inset 0 0 0 2px var(--stamp-red);color:var(--ink);font-weight:700}
+  .cran .tick.cur.on{color:#fff}
+  .cran-ends{display:flex;justify-content:space-between;font-family:"Oswald",sans-serif;font-size:10px;
+    color:var(--ink-soft);letter-spacing:.05em;margin-top:3px}
+  .cran-now{color:var(--stamp-red);font-weight:700;font-size:12px}
 
-        .section-title {
-            font-size: 18px;
-            font-weight: bold;
-            color: var(--primary-color);
-            border-bottom: 2px solid var(--primary-color);
-            margin-bottom: 15px;
-            padding-bottom: 5px;
-        }
+  .list-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;gap:10px;flex-wrap:wrap}
+  .rows{display:flex;flex-direction:column;gap:6px}
+  #compList{gap:0}
+  .empty-note{font-size:12px;color:var(--ink-soft);font-style:italic;padding:8px 4px}
+  .incl{accent-color:var(--stamp-blue);width:17px;height:17px;cursor:pointer}
 
-        label {
-            font-size: 14px;
-            font-weight: bold;
-            display: block;
-            margin-top: 10px;
-            color: #666;
-            text-transform: uppercase;
-        }
+  .comp{display:grid;align-items:center;gap:0 8px;padding:0 6px;min-height:40px;
+    grid-template-columns:20px minmax(86px,150px) 1fr 52px 26px;
+    grid-template-areas:"chk name track val rm"}
+  .comp>.incl{grid-area:chk}
+  .comp .cname{grid-area:name;font-size:14px}
+  .comp .track{grid-area:track}
+  .comp .icon-btn{grid-area:rm}
+  .comp .cval{grid-area:val;font-family:"Oswald",sans-serif;font-weight:600;text-align:center;font-size:15px;width:100%;
+    border:1px solid var(--line);border-radius:2px;background:rgba(255,255,255,.35);color:var(--ink);padding:3px 0}
+  .comp .cval.leveled{animation:lvlpulse 1s ease}
+  @keyframes lvlpulse{from{box-shadow:0 0 0 0 rgba(63,107,52,.6);background:rgba(63,107,52,.4)}to{box-shadow:0 0 0 9px rgba(63,107,52,0)}}
+  .track{display:grid;grid-template-columns:repeat(10,1fr);width:100%;height:100%;align-self:stretch}
+  .cell{min-width:0;display:flex;align-items:center;justify-content:center;
+    border-left:2px solid var(--ink);font-size:14px;line-height:1;font-family:"Oswald",sans-serif;font-weight:700}
+  .cell.ok{color:var(--green-ok)}
+  .cell.ko{color:var(--stamp-red)}
 
-        input[type="text"], input[type="number"], select {
-            width: 100%;
-            background: transparent;
-            border: none;
-            border-bottom: 2px dotted #999;
-            font-family: 'Caveat', cursive;
-            font-size: 22px;
-            color: var(--text-hand);
-            padding: 2px 5px;
-            outline: none;
-            box-sizing: border-box;
-        }
-        
-        input:focus, select:focus {
-            border-bottom: 2px solid var(--primary-color);
-        }
+  .obj{display:grid;grid-template-columns:1fr 70px 84px auto auto;align-items:center;gap:8px;
+    padding:5px 6px;border-bottom:1px solid rgba(42,38,32,.14)}
+  .obj .cname{font-size:14px}
+  .odie{font-family:"Oswald",sans-serif;font-weight:700;color:var(--stamp-red);font-size:14px;
+    background:rgba(255,255,255,.4);border:1px solid var(--line);border-radius:2px;padding:4px 2px}
+  .oprice{text-align:right}
 
-        .stats-box {
-            display: flex;
-            justify-content: space-around;
-            margin-top: 15px;
-            text-align: center;
-            background: #fff;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-        }
+  button{font-family:inherit;cursor:pointer}
+  .btn{font-family:"Oswald",sans-serif;font-weight:600;letter-spacing:.08em;font-size:11px;text-transform:uppercase;
+    background:var(--ink);color:var(--paper);border:none;border-radius:2px;padding:6px 12px;transition:transform .08s,background .15s}
+  .btn:hover{background:#000}
+  .btn:active{transform:translateY(1px)}
+  .btn.ghost{background:transparent;color:var(--ink);border:1.5px solid var(--ink)}
+  .btn.ghost:hover{background:var(--ink);color:var(--paper)}
+  .btn.hit{background:var(--stamp-red);padding:6px 11px}
+  .btn.hit:hover{background:#7e1f17}
+  .icon-btn{background:none;border:none;color:var(--stamp-red);font-size:17px;line-height:1;padding:0 4px}
+  .icon-btn:hover{color:#000}
 
-        .stat-value {
-            font-size: 36px;
-            font-family: 'Caveat', cursive;
-            font-weight: bold;
-        }
+  .rollbar{display:flex;gap:10px;align-items:stretch;margin:14px 0 0}
+  .rollbar .btn{flex:1 1 0;min-width:0;display:flex;align-items:center;justify-content:center;gap:6px;
+    font-size:13px;padding:12px 8px;letter-spacing:.05em;white-space:nowrap}
+  .btn.apt{background:var(--stamp-red)}
+  .btn.apt:hover{background:#7e1f17}
+  .btn.cran{background:#5e3b86}
+  .btn.cran:hover{background:#4a2d6b}
+  .btn.main{background:#c79a1e;color:#2a2620}
+  .btn.main:hover{background:#ad851a}
 
-        .rouge { color: var(--red-alert); }
-        .vert { color: var(--green-ok); }
+  /* welded unit: seuils (header) + copie corrigée (body) + bonus (footer) */
+  .copie-unit{border:2px solid var(--ink);border-radius:2px;margin-top:12px;overflow:hidden}
 
-        /* Outil Argent (flèches ▲▼) */
-        .argent-tool {
-            display: flex;
-            justify-content: center;
-            gap: 35px;
-            margin: 12px 0 8px;
-        }
-        .argent-stepper {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 2px;
-        }
-        .arrow-btn {
-            background: transparent;
-            border: none;
-            cursor: pointer;
-            color: var(--primary-color);
-            font-size: 16px;
-            line-height: 1;
-            width: auto;
-            margin: 0;
-            padding: 2px 10px;
-        }
-        .arrow-btn:hover {
-            background: transparent;
-            color: #2a4d59;
-        }
-        .argent-mid {
-            display: flex;
-            align-items: baseline;
-            gap: 3px;
-        }
-        .argent-mid input.argent-input {
-            width: 48px;
-            text-align: center;
-            font-size: 34px;
-            font-family: 'Caveat', cursive;
-            font-weight: bold;
-            color: var(--text-hand);
-            background: transparent;
-            border: none;
-            padding: 0;
-            outline: none;
-        }
-        .argent-input::-webkit-outer-spin-button,
-        .argent-input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
-        .argent-input { -moz-appearance: textfield; }
-        .unit-d {
-            font-family: 'Caveat', cursive;
-            font-size: 28px;
-            font-weight: bold;
-            color: #1e88e5;
-        }
-        .unit-c {
-            font-family: 'Caveat', cursive;
-            font-size: 28px;
-            font-weight: bold;
-            color: var(--green-ok);
-        }
+  .seuil-bar{display:flex;align-items:center;gap:10px 14px;flex-wrap:wrap;
+    padding:8px 14px;background:rgba(42,38,32,.07);border-bottom:2px solid var(--ink)}
+  .sb-label{font-family:"Oswald",sans-serif;font-weight:600;letter-spacing:.06em;font-size:12px;text-transform:uppercase;white-space:nowrap}
+  .sb-label b{color:var(--stamp-blue)}
+  .pills{display:flex;gap:5px}
+  .seuil-pill{font-family:"Oswald",sans-serif;font-weight:700;font-size:13px;color:var(--ink-soft);
+    background:rgba(255,255,255,.4);border:1px solid var(--line);border-radius:3px;padding:4px 9px;line-height:1}
+  .seuil-pill:hover{border-color:var(--stamp-blue);color:var(--ink)}
+  .seuil-pill[aria-selected="true"]{background:var(--stamp-blue);color:#fff;border-color:var(--stamp-blue)}
+  .sb-crit{font-size:10px;color:var(--ink-soft);letter-spacing:.03em;margin-left:auto}
 
-        /* Sous-note discrète (sous un titre) */
-        .sub-note {
-            font-size: 11px;
-            color: #999;
-            font-weight: normal;
-            text-transform: none;
-            margin: 2px 0 8px;
-        }
+  .verdict-zone{
+    position:relative;min-height:128px;display:flex;align-items:center;gap:20px;padding:18px;flex-wrap:wrap;
+    background:repeating-linear-gradient(0deg,rgba(255,255,255,.22),rgba(255,255,255,.22) 26px,rgba(42,38,32,.05) 26px,rgba(42,38,32,.05) 27px);
+  }
+  .verdict-zone .vz-head{position:absolute;top:5px;left:10px;font-family:"Oswald",sans-serif;font-weight:600;
+    letter-spacing:.16em;font-size:10px;color:var(--ink-soft);text-transform:uppercase}
+  .dice2{display:flex;gap:12px;margin-top:12px}
+  .d6{width:52px;height:52px;background:#f3ecd8;border:2px solid var(--ink);border-radius:9px;position:relative;
+    box-shadow:0 3px 0 rgba(0,0,0,.18),inset 0 0 0 1px rgba(0,0,0,.05)}
+  .d6 .pip{position:absolute;width:9px;height:9px;background:var(--ink);border-radius:50%}
 
-        /* Grandes cases du bulletin (Corps / Esprit) + compétences */
-        .bulletin-head {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 12px;
-            flex-wrap: wrap;
-            border-bottom: 2px solid var(--primary-color);
-            margin-bottom: 6px;
-            padding-bottom: 6px;
-        }
-        .bulletin-head .section-title {
-            border: none;
-            margin: 0;
-            padding: 0;
-        }
-        .stereo-select {
-            display: flex;
-            gap: 6px;
-            flex-wrap: wrap;
-        }
-        .emoji-stereo {
-            background: transparent;
-            border: 1px solid var(--border-color);
-            border-radius: 6px;
-            width: auto;
-            margin: 0;
-            padding: 3px 7px;
-            cursor: pointer;
-            font-size: 20px;
-            line-height: 1.1;
-            color: var(--primary-color);
-        }
-        .emoji-stereo:hover { background: rgba(59, 105, 120, 0.08); }
-        .emoji-stereo.active {
-            background: var(--primary-color);
-            border-color: var(--primary-color);
-        }
-        .head-right {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
-        .comp-check {
-            display: none;
-            align-items: center;
-            justify-content: center;
-            width: 28px;
-            height: 28px;
-            border-radius: 50%;
-            background: var(--green-ok);
-            color: #fff;
-            font-size: 18px;
-            font-weight: bold;
-        }
-        .comp-budget { font-weight: bold; color: var(--primary-color); }
-        .comp-budget.over { color: var(--red-alert); }
-        .comp-budget.done { color: var(--green-ok); }
+  .calc-info{margin-top:14px;min-width:120px}
+  .grade-col{margin-left:auto;display:flex;flex-direction:column;align-items:center;gap:6px;margin-top:8px;min-width:150px}
+  .grade{position:relative;width:118px;height:92px;display:flex;align-items:center;justify-content:center}
+  .grade-ring{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+  .grade-ring path{stroke:var(--stamp-red);stroke-width:3.4;fill:none;stroke-linecap:round;
+    stroke-dasharray:430;stroke-dashoffset:430;opacity:.92}
+  .grade.show .grade-ring path{animation:draw .55s ease forwards}
+  @keyframes draw{to{stroke-dashoffset:0}}
+  .grade-num{position:relative;z-index:2;font-family:"Caveat",cursive;font-weight:700;font-size:40px;
+    color:var(--stamp-red);transform:rotate(-7deg);line-height:1;text-shadow:0 0 1px rgba(156,42,33,.3)}
+  .grade.show .grade-num{animation:inkpop .26s .34s both}
+  @keyframes inkpop{from{opacity:0;transform:rotate(-7deg) scale(.55)}to{opacity:1;transform:rotate(-7deg) scale(1)}}
+  .calc-label{font-size:11px;color:var(--ink-soft);font-style:italic;text-align:center}
+  .calc-detail{font-size:12px;color:var(--ink-soft);text-align:center}
 
-        .bulletin-grid {
-            display: flex;
-            flex-direction: column;
-            gap: 18px;
-            margin-top: 14px;
-        }
-        .bulletin-grid .stat-block {
-            flex: 0 0 auto;
-            min-width: 0;
-            margin-top: 0;
-        }
-        @media (max-width: 640px) {
-            .bulletin-grid { flex-direction: column; }
-        }
-        .stat-block { margin-top: 18px; }
-        .stat-header {
-            color: #fff;
-            font-family: 'Courier Prime', monospace;
-            font-weight: bold;
-            font-size: 18px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            padding: 10px 16px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .stat-header.hdr-corps { background: var(--red-alert); }
-        .stat-header.hdr-esprit { background: #1e88e5; }
-        .stat-points {
-            font-family: 'Caveat', cursive;
-            font-size: 32px;
-            font-weight: bold;
-        }
-        .comp-list {
-            border: 1px solid var(--border-color);
-            border-top: none;
-        }
-        .comp-row {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            padding: 5px 14px;
-            border-bottom: 1px dashed var(--border-color);
-            background: rgba(255, 255, 255, 0.55);
-        }
-        .comp-row:last-child { border-bottom: none; }
-        .comp-add {
-            margin-top: 8px;
-            font-size: 13px;
-            padding: 6px 8px;
-        }
-        .comp-row .comp-name {
-            flex: 1;
-            min-width: 0;
-            border: none;
-            background: transparent;
-            font-family: 'Caveat', cursive;
-            font-size: 22px;
-            color: var(--text-hand);
-            outline: none;
-            padding: 0;
-        }
-        .comp-row .comp-plus {
-            font-family: 'Caveat', cursive;
-            font-size: 24px;
-            font-weight: bold;
-            color: var(--green-ok);
-        }
-        .comp-row .comp-val {
-            width: 40px;
-            flex: 0 0 auto;
-            text-align: center;
-            border: none;
-            background: transparent;
-            font-family: 'Caveat', cursive;
-            font-size: 24px;
-            font-weight: bold;
-            color: var(--text-hand);
-            outline: none;
-            padding: 0;
-        }
-        .comp-row .comp-val::-webkit-outer-spin-button,
-        .comp-row .comp-val::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
-        .comp-row .comp-val { -moz-appearance: textfield; }
-        .comp-empty {
-            border: 1px dashed var(--border-color);
-            border-top: none;
-            padding: 10px 16px;
-            font-size: 13px;
-            color: #999;
-        }
+  .appreciation{font-family:"Caveat",cursive;font-size:30px;color:var(--stamp-red);
+    transform:rotate(-3deg);opacity:0;max-width:240px;line-height:1.04;text-align:center}
+  .appreciation.show{opacity:1;animation:inkpop .3s .5s both}
+  /* couleur de la note selon le résultat */
+  .grade.r-success .grade-ring path{stroke:var(--green-ok)}
+  .grade.r-success .grade-num{color:var(--green-ok)}
+  .appreciation.r-success{color:var(--green-ok)}
+  .grade.r-tie .grade-ring path{stroke:#d9871f}
+  .grade.r-tie .grade-num{color:#d9871f}
+  .appreciation.r-tie{color:#d9871f}
+  .grade.r-fail .grade-ring path{stroke:var(--stamp-red)}
+  .grade.r-fail .grade-num{color:var(--stamp-red)}
+  .appreciation.r-fail{color:var(--stamp-red)}
+  /* réussite critique : iridescent */
+  .grade.r-critsuccess .grade-ring{animation:huerot 3s linear infinite}
+  .grade.r-critsuccess .grade-ring path{stroke:#7b3fe4}
+  .grade.r-critsuccess .grade-num,.appreciation.r-critsuccess{
+    background:linear-gradient(90deg,#ff6ec4,#7873f5,#42e695,#facc15,#ff6ec4);background-size:300% 100%;
+    -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent;
+    text-shadow:none;animation:iris 3s linear infinite}
+  .appreciation.r-critsuccess{font-weight:700}
+  /* échec critique : rouge sang dégoulinant */
+  .grade.r-critfail .grade-ring path{stroke:#7c0d09}
+  .grade.r-critfail .grade-num{color:#7c0d09;position:relative;text-shadow:0 1px 4px rgba(124,13,9,.45)}
+  .grade.r-critfail .grade-num::before,.grade.r-critfail .grade-num::after{content:"";position:absolute;top:100%;
+    width:5px;height:0;background:linear-gradient(#9c1109,#5a0604);border-radius:0 0 4px 4px;opacity:0}
+  .grade.r-critfail .grade-num::before{left:38%;animation:drip 2.4s ease-in .2s infinite}
+  .grade.r-critfail .grade-num::after{left:58%;animation:drip 2.8s ease-in 1s infinite}
+  .appreciation.r-critfail{color:#7c0d09;font-weight:700}
+  @keyframes huerot{to{filter:hue-rotate(360deg)}}
+  @keyframes iris{to{background-position:300% 0}}
+  @keyframes drip{0%{height:0;opacity:0}25%{opacity:.95}80%{height:20px;opacity:.9}100%{height:26px;opacity:0}}
 
-        /* PV en cœurs SVG */
-        .pv-control {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            margin-top: 6px;
-        }
-        .pv-hearts {
-            flex: 1;
-            min-width: 0;
-            display: flex;
-            align-items: center;
-            gap: 4px;
-        }
-        .heart-btn {
-            flex: 1;
-            background: transparent;
-            border: none;
-            width: auto;
-            margin: 0;
-            padding: 0;
-            cursor: pointer;
-        }
-        .pv-heart {
-            width: 100%;
-            max-width: 56px;
-            height: auto;
-            display: block;
-            margin: 0 auto;
-            transition: transform 0.1s ease;
-        }
-        .pv-control .heart-btn:hover { background: transparent; }
-        .heart-btn:hover .pv-heart { transform: scale(1.08); }
-        .pv-btn {
-            background: transparent;
-            border: 2px solid var(--primary-color);
-            color: var(--primary-color);
-            width: 40px;
-            height: 38px;
-            flex: 0 0 auto;
-            margin: 0;
-            padding: 0;
-            font-size: 20px;
-            font-weight: bold;
-            line-height: 1;
-            cursor: pointer;
-            border-radius: 4px;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .pv-btn:hover { background: rgba(59, 105, 120, 0.1); }
+  .bonus-note{font-family:"Caveat",cursive;font-weight:700;font-size:24px;color:var(--stamp-red);
+    transform:rotate(-2deg);opacity:0;display:flex;align-items:baseline;gap:8px;justify-content:center;margin-top:2px}
+  .bonus-note[hidden]{display:none}
+  .bonus-note.show{opacity:1;animation:inkpop .3s both}
+  .bonus-note .src{font-family:"Special Elite","Courier New",monospace;font-size:11px;font-weight:400;
+    color:var(--ink-soft);transform:none}
 
-        /* Niveau de Stress en ronds */
-        .stress-icons {
-            display: flex;
-            align-items: center;
-            gap: 2px;
-            flex: 1;
-            min-width: 0;
-        }
-        .stress-cell {
-            flex: 1;
-            background: transparent;
-            border: none;
-            width: auto;
-            margin: 0;
-            padding: 8px 0;
-            cursor: pointer;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-        .stress-dot {
-            width: 16px;
-            height: 16px;
-            border-radius: 50%;
-            opacity: 0.35;
-            transition: all 0.12s ease;
-        }
-        .stress-icons .stress-cell:hover { background: transparent; }
-        .stress-cell:hover .stress-dot { opacity: 0.7; transform: scale(1.2); }
-        .stress-cell.locked { cursor: not-allowed; position: relative; }
-        .stress-cell.locked:hover .stress-dot { opacity: 0.25; transform: none; }
-        .stress-cell.locked .stress-dot { opacity: 0.25; }
-        .lock-x {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            color: var(--red-alert);
-            font-weight: bold;
-            font-size: 20px;
-            pointer-events: none;
-        }
-        .stress-cell.sel .stress-dot {
-            opacity: 1;
-            width: 26px;
-            height: 26px;
-            box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.18);
-        }
+  .toolbar{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end;margin-top:16px}
+  .savetag{font-size:11px;color:var(--ink-soft);margin-right:auto;align-self:center;letter-spacing:.05em}
 
-        .jauge-container {
-            width: 100%;
-            margin-top: 20px;
-            background: transparent;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        .stress-value {
-            font-family: 'Caveat', cursive;
-            font-size: 26px;
-            font-weight: bold;
-            line-height: 1;
-        }
+  a:focus-visible,button:focus-visible,[contenteditable]:focus-visible,input:focus-visible,
+  select:focus-visible,.photo:focus-visible{outline:2px solid var(--stamp-blue);outline-offset:2px}
 
-        input[type="range"] {
-            width: 90%;
-            accent-color: var(--primary-color);
-            margin: 15px 0;
-        }
-
-        .inventory-table {
-            width: 100%;
-            border-collapse: separate;
-            border-spacing: 12px 0;
-            margin-top: 10px;
-        }
-
-        .inventory-table th {
-            text-align: left;
-            font-size: 14px;
-            border-bottom: 2px solid var(--primary-color);
-            color: var(--primary-color);
-            padding-bottom: 5px;
-        }
-
-        .inventory-table td {
-            border-bottom: 1px dotted #999;
-            padding: 6px 0;
-        }
-        /* Pas de double soulignement : seul le segment de la cellule s'affiche */
-        .inventory-table td input,
-        .inventory-table td select {
-            border-bottom: none;
-        }
-
-        /* Nouveaux boutons d'ajout/suppression dynamiques */
-        .add-btn {
-            background: transparent;
-            border: 2px dashed var(--primary-color);
-            color: var(--primary-color);
-            padding: 8px 10px;
-            font-family: 'Courier Prime', monospace;
-            font-weight: bold;
-            cursor: pointer;
-            width: 100%;
-            margin-top: 10px;
-            font-size: 14px;
-            transition: background 0.2s;
-        }
-
-        .add-btn:hover {
-            background: rgba(59, 105, 120, 0.1);
-        }
-
-        .del-btn {
-            background: transparent;
-            border: none;
-            color: var(--red-alert);
-            font-weight: bold;
-            font-family: 'Courier Prime', monospace;
-            cursor: pointer;
-            font-size: 18px;
-            padding: 0 5px;
-            width: auto;
-            flex: 0 0 auto;
-            margin-top: 0;
-        }
-        
-        .del-btn:hover {
-            color: #a00;
-        }
-
-        button {
-            background-color: var(--primary-color);
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            font-family: 'Courier Prime', monospace;
-            font-weight: bold;
-            cursor: pointer;
-            width: 100%;
-            margin-top: 15px;
-            font-size: 16px;
-        }
-
-        button:hover {
-            background-color: #2a4d59;
-        }
-
-        /* === Calques d'ambiance (Niveau de Stress) === */
-        #fx-vignette {
-            position: fixed;
-            inset: 0;
-            pointer-events: none;
-            z-index: 9000;
-            opacity: 0;
-            transition: opacity 0.45s ease;
-            background: radial-gradient(ellipse at center,
-                rgba(0,0,0,0) 42%,
-                rgba(0,0,0,0.55) 78%,
-                rgba(0,0,0,0.92) 100%);
-        }
-        #fx-particles {
-            position: fixed;
-            inset: 0;
-            pointer-events: none;
-            z-index: 9001;
-            overflow: hidden;
-        }
-        .particle {
-            position: absolute;
-            bottom: -16px;
-            border-radius: 50%;
-            background: radial-gradient(circle at 50% 50%,
-                rgba(255,251,230,0.85) 0%,
-                rgba(255,216,107,0.45) 30%,
-                rgba(255,190,80,0.12) 60%,
-                rgba(255,180,60,0) 80%);
-            box-shadow: 0 0 22px 10px rgba(255, 214, 110, 0.40);
-            filter: blur(2.5px);
-            animation-name: floatUp;
-            animation-timing-function: ease-in-out;
-            animation-fill-mode: forwards;
-            will-change: transform, opacity;
-        }
-        @keyframes floatUp {
-            0%   { transform: translate(0, 0) scale(0.5); opacity: 0; }
-            8%   { opacity: 1; }
-            50%  { transform: translate(var(--sway), -52vh) scale(1); }
-            88%  { opacity: 1; }
-            100% { transform: translate(var(--drift), -108vh) scale(0.6); opacity: 0; }
-        }
-
-    </style>
+  @media (max-width:640px){
+    .two{grid-template-columns:1fr}
+    .photo{max-width:180px;margin:0 auto}
+    .comp{grid-template-columns:20px 1fr 50px 24px;grid-template-areas:"chk name val rm" "track track track track"}
+    .comp .track{margin-top:3px}
+    .obj{grid-template-columns:1fr 60px 70px auto auto}
+    .sb-crit{display:none}
+    .grade-col{margin-left:0;width:100%}
+  }
+  @media (prefers-reduced-motion:reduce){
+    .grade.show .grade-ring path,.grade.show .grade-num,.appreciation.show,.bonus-note.show,
+    .grade.r-critsuccess .grade-ring,.grade.r-critsuccess .grade-num,.appreciation.r-critsuccess,
+    .grade.r-critfail .grade-num::before,.grade.r-critfail .grade-num::after{animation:none}
+    .grade-ring path{stroke-dashoffset:0}
+  }
+</style>
 </head>
 <body>
+<div class="folder">
+  <div class="tab">DOSSIER N° <b id="dossierNo" class="field" contenteditable="true" spellcheck="false">SC-1984-███</b></div>
 
-<div class="fiche-container">
-    <div class="header-title">Dossier Élève - Shadow Creek</div>
+  <div class="sheet">
+    <div class="confid">CONFIDENTIEL</div>
 
-    <div class="section">
-        <!-- Colonne gauche : Profil / État / Porte-monnaie -->
-        <div class="col-stack">
+    <header class="masthead">
+      <h1 class="school" id="school" contenteditable="true" spellcheck="false">SHADOW CREEK HIGH SCHOOL</h1>
+      <div class="sub-row">
+        <span>Dossier élève · Service de la vie scolaire</span>
+        <span>Année scolaire <b class="ed" id="annee" contenteditable="true" spellcheck="false">1984 – 1985</b></span>
+      </div>
+    </header>
 
-            <!-- Profil -->
-            <div class="col">
-                <div class="section-title">Profil</div>
-                <label>Nom du Personnage</label>
-                <input type="text" placeholder="Ex: Timmy">
-
-                <label>Âge</label>
-                <input type="number" placeholder="Ex: 14">
-            </div>
-
-            <!-- État : Vie + Terreur -->
-            <div class="col">
-                <div class="section-title">État</div>
-
-                <label>Points de Vie (PV)</label>
-                <div class="pv-control">
-                    <button class="pv-btn" onclick="changePV(-1)" aria-label="Retirer un PV">−</button>
-                    <span id="pv-hearts" class="pv-hearts"></span>
-                    <button class="pv-btn" onclick="changePV(1)" aria-label="Ajouter un PV">+</button>
-                </div>
-
-                <div class="jauge-container" style="margin-top:18px;">
-                    <label>Niveau de Stress</label>
-                    <div class="pv-control">
-                        <button class="pv-btn" onclick="stepStress(-1)" title="Vers la terreur">👻</button>
-                        <div id="stress-icons" class="stress-icons"></div>
-                        <button class="pv-btn" onclick="stepStress(1)" title="Vers le courage">🦁</button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Porte-monnaie -->
-            <div class="col">
-                <div class="section-title">Porte-monnaie</div>
-                <div class="argent-tool">
-                    <div class="argent-stepper">
-                        <button class="arrow-btn" onclick="stepArgent('d', 1)" aria-label="Augmenter les dollars">▲</button>
-                        <div class="argent-mid">
-                            <input type="number" id="stat-argent-d" class="argent-input" min="0" value="0"><span class="unit-d">$</span>
-                        </div>
-                        <button class="arrow-btn" onclick="stepArgent('d', -1)" aria-label="Diminuer les dollars">▼</button>
-                    </div>
-                    <div class="argent-stepper">
-                        <button class="arrow-btn" onclick="stepArgent('c', 1)" aria-label="Augmenter les cents">▲</button>
-                        <div class="argent-mid">
-                            <input type="number" id="stat-argent-c" class="argent-input" min="0" max="99" value="0"><span class="unit-c">¢</span>
-                        </div>
-                        <button class="arrow-btn" onclick="stepArgent('c', -1)" aria-label="Diminuer les cents">▼</button>
-                    </div>
-                </div>
-            </div>
-
+    <div class="grid two" style="margin-bottom:16px">
+      <fieldset class="frame">
+        <legend>État civil</legend>
+        <div class="rowline">
+          <span class="lbl">Nom</span><input class="field" id="nom" placeholder="…………………" style="flex:1 1 130px">
+          <span class="lbl">Prénom</span><input class="field" id="prenom" placeholder="…………………" style="flex:1 1 130px">
+        </div>
+        <div class="rowline">
+          <span class="lbl">Né(e) le</span><input class="field" id="naissance" placeholder="jj / mm / aaaa" style="flex:0 1 130px">
+          <span class="lbl">à</span><input class="field" id="lieu" placeholder="…………………" style="flex:1 1 130px">
+        </div>
+        <div class="rowline">
+          <span class="lbl">Adresse</span><input class="field" id="adresse" placeholder="…………………………………………" style="flex:1 1 100%">
+        </div>
+        <div class="rowline">
+          <span class="lbl">Classe</span><input class="field" id="classe" placeholder="Terminale B" style="flex:0 1 150px">
+          <span class="lbl">Régime</span><input class="field" id="regime" placeholder="Externe" style="flex:0 1 120px">
+        </div>
+        <div class="pv-block" style="margin-top:12px">
+          <div class="pv-head"><span class="lbl">Points de vie</span><span class="pvnum" id="pvnum">10 / 10</span></div>
+          <div class="hearts" id="hearts"></div>
         </div>
 
-        <!-- Colonne droite : Bulletin (Corps puis Esprit) -->
-        <div class="col">
-            <div class="bulletin-head">
-                <div class="section-title">Bulletin — 1er Trimestre 1984</div>
-                <div class="head-right">
-                    <div class="stereo-select">
-                        <button class="emoji-stereo" onclick="selectStereo('sportif', this)" title="Sportif">👟</button>
-                        <button class="emoji-stereo" onclick="selectStereo('intello', this)" title="Intello">🧠</button>
-                        <button class="emoji-stereo" onclick="selectStereo('nanti', this)" title="Nanti">🎩</button>
-                        <button class="emoji-stereo" onclick="selectStereo('rue', this)" title="Gosse des rues">🛹</button>
-                        <button class="emoji-stereo" onclick="selectStereo('gothique', this)" title="Gothique">🕷️</button>
-                        <button class="emoji-stereo" onclick="selectStereo('geek', this)" title="Geek">💾</button>
-                    </div>
-                    <span id="comp-check" class="comp-check" title="Budget de compétences atteint">✓</span>
-                </div>
-            </div>
-            <div class="sub-note">Répartis tes points de compétence entre Corps et Esprit — <span id="comp-budget" class="comp-budget">0 / 3</span></div>
-            <div class="bulletin-grid">
-                <div id="bulletin-corps" class="stat-block"></div>
-                <div id="bulletin-esprit" class="stat-block"></div>
-            </div>
+        <div class="cran-block">
+          <span class="lbl">Cran</span>
+          <div class="cran" id="cran"></div>
+          <div class="cran-ends"><span>◄ Terreur</span><span class="cran-now" id="cranVal">0</span><span>Courage ►</span></div>
         </div>
+      </fieldset>
+
+      <div class="photo-wrap">
+        <div class="photo" id="photoBox" tabindex="0" role="button" aria-label="Ajouter une photo d'identité">
+          <span class="corner tl"></span><span class="corner tr"></span>
+          <span class="corner bl"></span><span class="corner br"></span>
+          <span class="hint" id="photoHint">PHOTO D'IDENTITÉ<br>— cliquer —</span>
+        </div>
+        <div class="photo-cap">NE PAS AGRAFER</div>
+        <input type="file" id="photoInput" accept="image/*" hidden>
+      </div>
     </div>
 
-    <!-- Inventaire limité -->
-    <div class="section">
-        <div class="col">
-            <div class="section-title">Sac à Dos</div>
-            <table class="inventory-table">
-                <thead>
-                    <tr>
-                        <th style="width: 40%">Objet / Arme</th>
-                        <th style="width: 20%">Qualité (Dé)</th>
-                        <th style="width: 35%">Effet / Stat</th>
-                        <th style="width: 5%"></th>
-                    </tr>
-                </thead>
-                <tbody id="inventory-body">
-                    <tr>
-                        <td><input type="text" placeholder="Ex: Batte de Baseball"></td>
-                        <td>
-                            <select>
-                                <option>-</option><option>D4</option><option>D6</option><option>D8</option><option>D10</option><option>D12</option>
-                            </select>
-                        </td>
-                        <td><input type="text" placeholder="Arme"></td>
-                        <td style="text-align: center;"><button class="del-btn" onclick="this.closest('tr').remove()" title="Jeter l'objet">✗</button></td>
-                    </tr>
-                </tbody>
-            </table>
-            <button class="add-btn" onclick="addInventoryRow()">+ Ajouter un objet au sac</button>
-        </div>
+    <fieldset class="frame" style="margin-bottom:16px">
+      <legend>Aptitudes — compétences</legend>
+      <div class="list-head" style="justify-content:flex-end">
+        <button class="btn ghost" id="addComp">+ Ajouter</button>
+      </div>
+      <div class="rows" id="compList"></div>
+      <div class="empty-note" id="compEmpty" hidden>Aucune compétence inscrite au dossier.</div>
+    </fieldset>
+
+    <fieldset class="frame" style="margin-bottom:16px">
+      <legend>Sac à dos</legend>
+      <div class="list-head">
+        <span class="lbl" style="font-size:11px">le dé = qualité de l'objet · HIT! lance les dégâts</span>
+        <button class="btn ghost" id="addObj">+ Ajouter</button>
+      </div>
+      <div class="rows" id="objList"></div>
+      <div class="empty-note" id="objEmpty" hidden>Sac vide.</div>
+    </fieldset>
+
+    <div class="rollbar">
+      <button class="btn apt" id="btnApt">🎓 Jet d'aptitude</button>
+      <button class="btn cran" id="btnCran">🌀 Jet de Cran</button>
+      <button class="btn main" id="btnMain">✊ Main nue</button>
     </div>
 
+    <!-- welded: seuils header + copie corrigée + bonus footer -->
+    <div class="copie-unit">
+      <div class="seuil-bar" id="seuilBar">
+        <span class="sb-label">Seuil&nbsp;: <b id="seuilName">Moyen</b></span>
+        <div class="pills" id="seuils" role="listbox" aria-label="Choisir la difficulté">
+          <button class="seuil-pill" data-v="5" data-name="Très facile" role="option" title="Très facile">5+</button>
+          <button class="seuil-pill" data-v="7" data-name="Facile" role="option" title="Facile">7+</button>
+          <button class="seuil-pill" data-v="9" data-name="Moyen" role="option" title="Moyen" aria-selected="true">9+</button>
+          <button class="seuil-pill" data-v="11" data-name="Difficile" role="option" title="Difficile">11+</button>
+          <button class="seuil-pill" data-v="13" data-name="Très difficile" role="option" title="Très difficile">13+</button>
+          <button class="seuil-pill" data-v="15" data-name="Héroïque" role="option" title="Héroïque">15+</button>
+        </div>
+        <span class="sb-crit">Double 1 = échec critique · Double 6 = réussite critique</span>
+      </div>
+
+      <div class="verdict-zone" id="verdict">
+        <span class="vz-head">Copie corrigée</span>
+        <div class="dice2"><div class="d6" id="dieA"></div><div class="d6" id="dieB"></div></div>
+        <div class="calc-info">
+          <div class="calc-label" id="calcLabel">En attente d'une copie…</div>
+          <div class="calc-detail" id="calcDetail">2D6 + compétences vs seuil</div>
+        </div>
+        <div class="grade-col">
+          <div class="grade" id="grade">
+            <svg class="grade-ring" viewBox="0 0 120 100" preserveAspectRatio="none" aria-hidden="true">
+              <path pathLength="430" d="M62 14 C96 10 113 33 107 56 C103 86 78 96 50 93 C22 90 9 66 14 44 C18 22 41 11 71 16"/>
+            </svg>
+            <span class="grade-num" id="gradeNum">—</span>
+          </div>
+          <div class="appreciation" id="appr"></div>
+          <div class="bonus-note" id="bonusNote" hidden></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="toolbar">
+      <span class="savetag" id="saveTag">Sauvegarde auto active</span>
+      <button class="btn ghost" id="printBtn">🖨 Imprimer la fiche</button>
+      <button class="btn ghost" id="resetBtn">⟳ Réinitialiser</button>
+      <button class="btn ghost" id="exportBtn">Exporter le dossier</button>
+      <button class="btn ghost" id="importBtn">Importer</button>
+      <input type="file" id="importInput" accept="application/json" hidden>
+    </div>
+  </div>
 </div>
 
-<!-- Calques d'ambiance pilotés par le Niveau de Stress -->
-<div id="fx-vignette" aria-hidden="true"></div>
-<div id="fx-particles" aria-hidden="true"></div>
-
 <script>
-    // === Niveau de Stress : vignette (terreur) + particules (courage) ===
-    let stress = 0;
-    let lockedStress = new Set(); // niveaux verrouillés (ex. Gothique : -5)
+(function(){
+  "use strict";
+  const KEY="midnightclub_dossier_v1";
+  const $=s=>document.querySelector(s);
+  const roll=f=>1+Math.floor(Math.random()*f);
 
-    function applyStressFx() {
-        document.getElementById('fx-vignette').style.opacity =
-            stress < 0 ? Math.min(1, Math.abs(stress) / 5).toFixed(2) : 0;
-    }
-    function renderStress() {
-        const c = document.getElementById('stress-icons');
-        let html = '';
-        for (let i = -5; i <= 5; i++) {
-            const sel = (i === stress) ? ' sel' : '';
-            if (lockedStress.has(i)) {
-                const color = (i < 0) ? '#8e24aa' : '#fb8c00';
-                html += `<button class="stress-cell locked" onclick="setStress(${i})" title="Verrouillé — habitué à la mort"><span class="stress-dot" style="background:${color}"></span><span class="lock-x">✗</span></button>`;
-            } else if (i === 0) {
-                // Centre de la jauge : la valeur du modificateur
-                const valColor = stress > 0 ? '#fb8c00' : (stress < 0 ? '#8e24aa' : '#777');
-                const valTxt = stress > 0 ? '+' + stress : stress;
-                html += `<button class="stress-cell${sel}" onclick="setStress(0)" title="Neutre"><span class="stress-value" style="color:${valColor}">${valTxt}</span></button>`;
-            } else {
-                const color = (i < 0) ? '#8e24aa' : '#fb8c00'; // violet terreur / orange courage
-                const lbl = (i > 0 ? '+' + i : i);
-                html += `<button class="stress-cell${sel}" onclick="setStress(${i})" title="${lbl}"><span class="stress-dot" style="background:${color}"></span></button>`;
-            }
-        }
-        c.innerHTML = html;
-    }
-    function setStress(v) {
-        if (lockedStress.has(v)) return; // niveau verrouillé : on ignore
-        stress = v;
-        applyStressFx();
-        renderStress();
-    }
-    function stepStress(delta) {
-        let v = stress + delta;
-        if (v < -5) v = -5;
-        if (v > 5) v = 5;
-        if (lockedStress.has(v)) return; // bloqué par le verrou
-        setStress(v);
-    }
+  let state={
+    dossierNo:"SC-1984-███", school:"SHADOW CREEK HIGH SCHOOL", annee:"1984 – 1985",
+    nom:"RAYNOLD", prenom:"Timmy", naissance:"29 / 11 / 1970", lieu:"Arkham", adresse:"", classe:"4e", regime:"1/2 pension",
+    pvMax:10, pvCur:10, cran:0, photo:"data:image/jpeg;base64,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", seuil:9,
+    competences:[ {nom:"Discrétion",val:1,checked:false,marks:[]}, {nom:"Bagarre",val:0,checked:false,marks:[]}, {nom:"Sang-froid",val:0,checked:false,marks:[]} ],
+    objets:[ {nom:"Batte de baseball",faces:8,prix:"50 $"} ]
+  };
 
-    function spawnParticle() {
-        const layer = document.getElementById('fx-particles');
-        const p = document.createElement('div');
-        p.className = 'particle';
-        const size = 7 + Math.random() * 11;
-        p.style.width = size + 'px';
-        p.style.height = size + 'px';
-        p.style.left = (Math.random() * window.innerWidth) + 'px';
-        p.style.setProperty('--sway', (Math.random() * 80 - 40) + 'px');
-        p.style.setProperty('--drift', (Math.random() * 160 - 80) + 'px');
-        const dur = 4 + Math.random() * 4;
-        p.style.animationDuration = dur + 's';
-        layer.appendChild(p);
-        setTimeout(() => p.remove(), dur * 1000 + 300);
-    }
+  const PIPS={1:[[50,50]],2:[[27,27],[73,73]],3:[[27,27],[50,50],[73,73]],
+    4:[[27,27],[73,27],[27,73],[73,73]],5:[[27,27],[73,27],[50,50],[27,73],[73,73]],
+    6:[[27,27],[73,27],[27,50],[73,50],[27,73],[73,73]]};
+  function drawDie(el,v){
+    el.innerHTML="";
+    PIPS[v].forEach(([x,y])=>{const p=document.createElement("span");p.className="pip";
+      p.style.left=`calc(${x}% - 4.5px)`;p.style.top=`calc(${y}% - 4.5px)`;el.appendChild(p);});
+  }
 
-    // Boucle d'ambiance : plus le courage est haut, plus il y a de particules
-    setInterval(() => {
-        if (stress <= 0) return;
-        const count = Math.ceil(stress / 2);
-        for (let i = 0; i < count; i++) spawnParticle();
-    }, 230);
-
-    // Incrément/décrément de l'argent via les flèches ▲▼
-    function stepArgent(which, delta) {
-        const el = document.getElementById(which === 'd' ? 'stat-argent-d' : 'stat-argent-c');
-        let v = (parseInt(el.value) || 0) + delta;
-        if (v < 0) v = 0;
-        if (which === 'c' && v > 99) v = 99;
-        el.value = v;
+  function heartSVG(){return '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 21s-7.5-4.9-10-9.3C-0.2 7.3 2.7 3.5 6.3 4.1 8.3 4.4 10 6 12 8c2-2 3.7-3.6 5.7-3.9 3.6-.6 6.5 3.2 4.3 7.6C19.5 16.1 12 21 12 21z"/></svg>';}
+  function renderHearts(){
+    const wrap=$("#hearts");wrap.innerHTML="";
+    for(let i=1;i<=state.pvMax;i++){
+      const h=document.createElement("span");h.className="heart"+(i>state.pvCur?" empty":"");
+      h.innerHTML=heartSVG();h.title="PV "+i;
+      h.onclick=()=>{state.pvCur=(state.pvCur===i?i-1:i);renderHearts();save();};
+      wrap.appendChild(h);
     }
+    $("#pvnum").textContent=state.pvCur+" / "+state.pvMax;
+  }
 
-    // Points de Vie en cœurs SVG
-    let pv = 10;
-    function svgHeart(filled) {
-        const fill = filled ? 'var(--red-alert)' : 'none';
-        const stroke = filled ? 'var(--red-alert)' : '#c9c2b4';
-        return `<svg viewBox="0 0 24 24" class="pv-heart" aria-hidden="true"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" fill="${fill}" stroke="${stroke}" stroke-width="1.6"/></svg>`;
+  function renderCran(){
+    if(typeof state.cran!=="number") state.cran=0;
+    const wrap=$("#cran"); wrap.innerHTML="";
+    for(let v=-5; v<=5; v++){
+      const t=document.createElement("div");
+      t.className="tick"+(v===0?" zero":(v<0?" neg":" pos"));
+      const filled=(state.cran>0 && v>0 && v<=state.cran) || (state.cran<0 && v<0 && v>=state.cran);
+      if(filled) t.classList.add("on");
+      if(v===state.cran) t.classList.add("cur");
+      t.textContent = v>0 ? "+"+v : String(v);
+      t.onclick=()=>{ state.cran=(state.cran===v?0:v); renderCran(); save(); };
+      wrap.appendChild(t);
     }
-    function renderPV() {
-        const c = document.getElementById('pv-hearts');
-        let html = '';
-        for (let i = 0; i < 10; i++) {
-            html += `<button class="heart-btn" onclick="setPV(${i + 1})" title="${i + 1} PV">${svgHeart(i < pv)}</button>`;
-        }
-        c.innerHTML = html;
-    }
-    function setPV(n) {
-        pv = (pv === n) ? n - 1 : n; // re-cliquer le dernier cœur plein le retire
-        if (pv < 0) pv = 0;
-        if (pv > 10) pv = 10;
-        renderPV();
-    }
-    function changePV(delta) {
-        pv += delta;
-        if (pv < 0) pv = 0;
-        if (pv > 10) pv = 10;
-        renderPV();
-    }
+    $("#cranVal").textContent=(state.cran>0?"+":"")+state.cran;
+  }
 
-    // MAJ Statistiques selon Stéréotype (piloté par le sélecteur d'émoji)
-    let currentStereo = "";
-    function selectStereo(value, btn) {
-        currentStereo = value;
-        document.querySelectorAll('.emoji-stereo').forEach(b => b.classList.remove('active'));
-        if (btn) btn.classList.add('active');
-        updateStats();
+  function renderComp(){
+    const list=$("#compList");list.innerHTML="";
+    $("#compEmpty").hidden=state.competences.length>0;
+    state.competences.forEach((c,i)=>{
+      if(!Array.isArray(c.marks)) c.marks=[];
+      const row=document.createElement("div");row.className="comp";
+      row.innerHTML=`
+        <input type="checkbox" class="incl" title="Inclure dans le jet">
+        <input class="field cname" placeholder="Nom de la compétence">
+        <div class="track" title="Relevé : 10 essais"></div>
+        <input class="cval" type="number" inputmode="numeric" value="0">
+        <button class="icon-btn" title="Retirer">✕</button>`;
+      const chk=row.querySelector(".incl"), nameI=row.querySelector(".cname"),
+            valI=row.querySelector(".cval"), track=row.querySelector(".track");
+      chk.checked=!!c.checked; nameI.value=c.nom; valI.value=c.val;
+      for(let k=0;k<10;k++){
+        const cell=document.createElement("div"); cell.className="cell";
+        const m=c.marks[k];
+        if(m==="ok"){cell.classList.add("ok");cell.textContent="✓";}
+        else if(m==="ko"){cell.classList.add("ko");cell.textContent="✗";}
+        track.appendChild(cell);
+      }
+      if(c._lvl){ valI.classList.add("leveled"); delete c._lvl; }
+      chk.onchange=()=>{c.checked=chk.checked;save();};
+      nameI.oninput=()=>{c.nom=nameI.value;save();};
+      valI.oninput=()=>{c.val=parseInt(valI.value)||0;save();};
+      row.querySelector(".icon-btn").onclick=()=>{state.competences.splice(i,1);renderComp();save();};
+      list.appendChild(row);
+    });
+  }
+
+  function renderObj(){
+    const list=$("#objList");list.innerHTML="";
+    $("#objEmpty").hidden=state.objets.length>0;
+    state.objets.forEach((o,i)=>{
+      const row=document.createElement("div");row.className="obj";
+      row.innerHTML=`
+        <input class="field cname" placeholder="Nom de l'objet">
+        <select class="odie" title="Qualité (dé de dégâts)">
+          <option value="4">D4</option><option value="6">D6</option><option value="8">D8</option>
+          <option value="10">D10</option><option value="12">D12</option>
+        </select>
+        <input class="field oprice" placeholder="prix">
+        <button class="btn hit" title="Lancer le dé de dégâts">HIT!</button>
+        <button class="icon-btn" title="Retirer">✕</button>`;
+      const nameI=row.querySelector(".cname"), die=row.querySelector(".odie"), priceI=row.querySelector(".oprice");
+      nameI.value=o.nom; die.value=String(o.faces); priceI.value=o.prix||"";
+      nameI.oninput=()=>{o.nom=nameI.value;save();};
+      die.onchange=()=>{o.faces=parseInt(die.value)||4;save();};
+      priceI.oninput=()=>{o.prix=priceI.value;save();};
+      row.querySelector(".hit").onclick=()=>hit(o.faces, o.nom||"Objet");
+      row.querySelector(".icon-btn").onclick=()=>{state.objets.splice(i,1);renderObj();save();};
+      list.appendChild(row);
+    });
+  }
+
+  function selectSeuil(v){
+    state.seuil=v;
+    let name="";
+    $("#seuils").querySelectorAll(".seuil-pill").forEach(p=>{
+      const sel=parseInt(p.dataset.v)===v;
+      p.setAttribute("aria-selected",String(sel));
+      if(sel) name=p.dataset.name;
+    });
+    if(name) $("#seuilName").textContent=name;
+    save();
+  }
+
+  // ---- test (2D6 + checked competences) ----
+  const APPREC={
+    critsuccess:{cls:"crit-ok", txt:"Excellent travail ! Continuez comme ça !"},
+    success:    {cls:"ok",      txt:"Bon travail."},
+    tie:        {cls:"tie",     txt:"Passable."},
+    fail:       {cls:"ko",      txt:"Insuffisant."},
+    critfail:   {cls:"crit-ko", txt:"Médiocre !"}
+  };
+  function outcome(d1,d2,total){
+    if(d1===1&&d2===1) return "critfail";
+    if(d1===6&&d2===6) return "critsuccess";
+    if(total>state.seuil) return "success";
+    if(total===state.seuil) return "tie";
+    return "fail";
+  }
+
+  // progression : pose une marque dans le relevé ; à 10 cases, majorité de ✓ → +1, puis on repart
+  function recordMark(c, success){
+    if(!Array.isArray(c.marks)) c.marks=[];
+    c.marks.push(success?"ok":"ko");
+    if(c.marks.length>=10){
+      const greens=c.marks.filter(m=>m==="ok").length;
+      if(greens>=6){ c.val=(parseInt(c.val)||0)+1; c._lvl=true; }
+      c.marks=[];
     }
-    function updateStats() {
-        const stereotype = currentStereo;
-        let corps = 0, esprit = 0, dollars = 0, cents = 0;
+  }
 
-        if (stereotype === "intello") { corps = 3; esprit = 5; dollars = 10; }
-        else if (stereotype === "sportif") { corps = 5; esprit = 3; dollars = 10; }
-        else if (stereotype === "nanti") { corps = 3; esprit = 3; dollars = 20; }
-        else if (stereotype === "rue") { corps = 5; esprit = 5; dollars = 5; }
-        else if (stereotype === "gothique") { corps = 4; esprit = 3; dollars = 10; }
-        else if (stereotype === "geek") { corps = 3; esprit = 4; dollars = 10; }
+  // rendu commun d'un jet : dés, note entourée, appréciation ; renvoie le type de résultat
+  function renderTest(d1,d2,mod,label){
+    const total=d1+d2+mod;
+    const kind=outcome(d1,d2,total), a=APPREC[kind];
+    drawDie($("#dieA"),d1); drawDie($("#dieB"),d2);
+    $("#calcLabel").textContent=label;
+    const modTxt = mod? ` ${mod>0?"+":"−"} ${Math.abs(mod)}` : "";
+    $("#calcDetail").innerHTML=`${d1} + ${d2}${modTxt} = ${total}`;
+    $("#gradeNum").textContent=`${total}/${state.seuil}`;
+    const grade=$("#grade");
+    grade.className="grade r-"+kind; void grade.offsetWidth; grade.classList.add("show");
+    const appr=$("#appr");
+    appr.className="appreciation r-"+kind; appr.textContent=a.txt;
+    void appr.offsetWidth; appr.classList.add("show");
+    return kind;
+  }
 
-        // Verrous de la jauge de stress selon le stéréotype
-        if (stereotype === "gothique") lockedStress = new Set([-5]);   // habitué à la mort
-        else if (stereotype === "geek") lockedStress = new Set([5]);   // jamais vraiment courageux
-        else lockedStress = new Set();
-        if (lockedStress.has(stress)) stress += (stress < 0 ? 1 : -1); // on quitte le cran verrouillé
-        applyStressFx();
-        renderStress();
+  // JET D'APTITUDE : 2D6 + compétences cochées, et marque le relevé
+  function lancerTest(){
+    $("#bonusNote").hidden=true;
+    const comps=state.competences.filter(c=>c.checked);
+    const compSum=comps.reduce((s,c)=>s+(parseInt(c.val)||0),0);
+    const names=comps.map(c=>`${c.nom||"?"} (${(parseInt(c.val)||0)>=0?"+":""}${parseInt(c.val)||0})`).join(" + ");
+    const d1=roll(6), d2=roll(6);
+    const kind=renderTest(d1,d2,compSum, names?("Aptitude : "+names):"Jet sans compétence");
+    const success=(kind==="success"||kind==="critsuccess"||kind==="tie");
+    comps.forEach(c=>recordMark(c, success));
+    if(comps.length){ renderComp(); save(); }
+  }
 
-        // Budget de compétences : le geek en a 5, les autres 3
-        budget = (stereotype === "geek") ? 5 : 3;
+  // JET DE CRAN : 2D6 + bonus/malus de Cran (n'utilise pas les compétences, ne marque pas le relevé)
+  function jetCran(){
+    $("#bonusNote").hidden=true;
+    const c=(typeof state.cran==="number")?state.cran:0;
+    const d1=roll(6), d2=roll(6);
+    renderTest(d1,d2,c, `Jet de Cran (${c>=0?"+":""}${c})`);
+  }
 
-        statValue.corps = corps;
-        statValue.esprit = esprit;
-        document.getElementById("stat-argent-d").value = dollars;
-        document.getElementById("stat-argent-c").value = cents;
-        renderBulletin();
+  // ---- damage (objects + bare hands) -> bonus note in the copie ----
+  function hit(faces, label){
+    const v=roll(faces);
+    const note=$("#bonusNote");
+    note.innerHTML=`+${v} ${label} <span class="src">D${faces}</span>`;
+    note.hidden=false;
+    note.classList.remove("show"); void note.offsetWidth; note.classList.add("show");
+  }
+
+  let saveTimer=null;
+  function save(){
+    clearTimeout(saveTimer);
+    saveTimer=setTimeout(()=>{
+      try{ localStorage.setItem(KEY,JSON.stringify(state));
+        const t=$("#saveTag");t.textContent="Dossier enregistré ✓";
+        setTimeout(()=>t.textContent="Sauvegarde auto active",1200);
+      }catch(e){ $("#saveTag").textContent="Sauvegarde impossible (mode privé ?)"; }
+    },350);
+  }
+  function load(){ try{const raw=localStorage.getItem(KEY); if(raw) state=Object.assign(state,JSON.parse(raw));}catch(e){} }
+
+  function bindField(id,key,isCE){
+    const el=document.getElementById(id);
+    if(isCE){ el.textContent=state[key]; el.addEventListener("input",()=>{state[key]=el.textContent;save();}); }
+    else { el.value=state[key]; el.addEventListener("input",()=>{state[key]=el.value;save();}); }
+  }
+
+  function setPhoto(dataURL){
+    state.photo=dataURL;
+    const box=$("#photoBox"); let img=box.querySelector("img");
+    if(!img){ img=document.createElement("img"); box.appendChild(img); }
+    img.src=dataURL; $("#photoHint").style.display="none";
+  }
+
+  function applyState(){
+    bindField("dossierNo","dossierNo",true);
+    bindField("school","school",true);
+    bindField("annee","annee",true);
+    ["nom","prenom","naissance","lieu","adresse","classe","regime"].forEach(k=>bindField(k,k,false));
+    if(state.photo) setPhoto(state.photo);
+    renderHearts(); renderCran(); renderComp(); renderObj(); selectSeuil(state.seuil);
+  }
+
+  function exportDossier(){
+    const blob=new Blob([JSON.stringify(state,null,2)],{type:"application/json"});
+    const a=document.createElement("a");
+    const who=(state.nom||state.prenom)?`${state.prenom}_${state.nom}`.replace(/\s+/g,"_"):"dossier";
+    a.href=URL.createObjectURL(blob); a.download=`midnight_${who}.json`; a.click(); URL.revokeObjectURL(a.href);
+  }
+  function importDossier(file){
+    const fr=new FileReader();
+    fr.onload=()=>{ try{ state=Object.assign(state,JSON.parse(fr.result)); applyState(); save(); }
+      catch(e){ $("#saveTag").textContent="Fichier illisible"; } };
+    fr.readAsText(file);
+  }
+
+  // version imprimable : noir & blanc, sans interactif, 10 lignes vierges aptitudes + objets
+  function imprimerFiche(){
+    const s=state;
+    const esc=t=>(t==null?"":String(t)).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+    const orLine=(v,w)=> esc(v) || `<span class="line" style="min-width:${w}px"></span>`;
+    let apt="";
+    for(let i=0;i<10;i++){
+      let bars=""; for(let k=0;k<10;k++) bars+='<span class="pcell"></span>';
+      apt+=`<div class="prow"><span class="pname"></span><div class="ptrack">${bars}</div><span class="pval"></span></div>`;
     }
+    let obj="";
+    for(let i=0;i<10;i++) obj+='<div class="orow"><span class="oname"></span><span class="odie">D</span><span class="oprice"></span></div>';
+    let cran=""; for(let v=-5;v<=5;v++) cran+=`<span class="ptick${v===0?" z":""}">${v>0?"+"+v:v}</span>`;
+    let hearts=""; for(let i=0;i<10;i++) hearts+='<span class="ph">&#9825;</span>';
 
-    // === Bulletin ===
-    // En-tête +Corps / +Esprit = valeur du stéréotype (INDÉPENDANTE des compétences).
-    // Compétences : créées librement dans Corps et/ou Esprit, budget total de 3 points.
-    function escapeHtml(s) {
-        return String(s).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;');
-    }
-    let budget = 3;
-    let statValue = { corps: 0, esprit: 0 };
-    const comps = { corps: [], esprit: [] };
-    const blockMeta = {
-        corps:  { id: 'bulletin-corps',  label: 'Corps',  hdr: 'hdr-corps' },
-        esprit: { id: 'bulletin-esprit', label: 'Esprit', hdr: 'hdr-esprit' }
+    const html=`<!doctype html><html lang="fr"><head><meta charset="utf-8"><title>Fiche — ${esc(s.prenom)} ${esc(s.nom)}</title><style>
+    @page{size:A4;margin:13mm}
+    *{box-sizing:border-box;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+    body{font-family:'Courier New',monospace;color:#000;background:#fff;margin:0;font-size:12px;line-height:1.3}
+    h1{font-size:17px;margin:0;letter-spacing:.04em}
+    .head{border-bottom:2px solid #000;padding-bottom:5px;margin-bottom:9px}
+    .sub{font-size:11px;margin-top:2px}
+    .sec{border:1.4px solid #000;margin-bottom:9px}
+    .lg{font-weight:bold;letter-spacing:.1em;font-size:11px;text-transform:uppercase;background:#000;color:#fff;padding:2px 8px;display:inline-block}
+    .pad{padding:8px 10px}
+    .line{border-bottom:1px dotted #000;display:inline-block}
+    .grid2{display:flex;gap:14px}
+    .photo{width:96px;height:128px;border:1px solid #000;display:flex;align-items:center;justify-content:center;font-size:10px;flex:0 0 auto}
+    .photo img{width:100%;height:100%;object-fit:cover;filter:grayscale(1) contrast(1.1)}
+    .field{margin:5px 0}
+    .hearts{display:flex;justify-content:space-between;font-size:18px;margin-top:3px;max-width:320px}
+    .cran{display:flex;border:1px solid #000;margin-top:3px;max-width:340px}
+    .ptick{flex:1;text-align:center;padding:4px 0;border-left:1px solid #000;font-weight:bold}
+    .ptick:first-child{border-left:none}.ptick.z{background:#000;color:#fff}
+    .prow{display:grid;grid-template-columns:150px 1fr 42px;min-height:26px;border-bottom:1px solid #000}
+    .prow:last-child{border-bottom:none}
+    .pname{border-right:1px solid #000}
+    .ptrack{display:grid;grid-template-columns:repeat(10,1fr)}
+    .pcell{border-left:1px solid #000}.pcell:first-child{border-left:none}
+    .pval{border-left:1px solid #000}
+    .orow{display:grid;grid-template-columns:1fr 64px 80px;min-height:24px;border-bottom:1px solid #000}
+    .orow:last-child{border-bottom:none}
+    .odie{border-left:1px solid #000;padding-left:6px}
+    .oprice{border-left:1px solid #000}
+    .seuils{display:flex;flex-wrap:wrap;gap:7px;font-size:11px}
+    .seuils span{border:1px solid #000;padding:2px 6px}
+    .colh{display:grid;grid-template-columns:150px 1fr 42px;font-size:10px;letter-spacing:.06em;border-bottom:1px solid #000;padding-bottom:2px;margin-bottom:2px}
+    .colh2{display:grid;grid-template-columns:1fr 64px 80px;font-size:10px;letter-spacing:.06em;border-bottom:1px solid #000;padding-bottom:2px;margin-bottom:2px}
+    </style></head><body>
+    <div class="head"><h1>${esc(s.school)}</h1><div class="sub">Dossier élève &middot; Année ${esc(s.annee)} &middot; N° ${esc(s.dossierNo)}</div></div>
+    <div class="sec"><span class="lg">État civil</span><div class="pad grid2"><div style="flex:1">
+      <div class="field"><b>Nom :</b> ${orLine(s.nom,120)} &nbsp; <b>Prénom :</b> ${orLine(s.prenom,120)}</div>
+      <div class="field"><b>Né(e) le :</b> ${orLine(s.naissance,110)} &nbsp; <b>à</b> ${orLine(s.lieu,120)}</div>
+      <div class="field"><b>Adresse :</b> ${orLine(s.adresse,250)}</div>
+      <div class="field"><b>Classe :</b> ${orLine(s.classe,90)} &nbsp; <b>Régime :</b> ${orLine(s.regime,90)}</div>
+      <div class="field"><b>Points de vie</b><div class="hearts">${hearts}</div></div>
+      <div class="field"><b>Cran</b> &nbsp;<span style="font-size:10px">(−5 Terreur &middot; +5 Courage)</span><div class="cran">${cran}</div></div>
+    </div><div class="photo">${s.photo?`<img src="${s.photo}">`:"PHOTO"}</div></div></div>
+    <div class="sec"><span class="lg">Aptitudes — compétences</span><div class="pad">
+      <div class="colh"><span>Compétence</span><span style="text-align:center">Relevé (10 essais)</span><span>Niv.</span></div>${apt}</div></div>
+    <div class="sec"><span class="lg">Sac à dos</span><div class="pad">
+      <div class="colh2"><span>Objet</span><span style="padding-left:6px">Dé</span><span style="padding-left:6px">Prix</span></div>${obj}</div></div>
+    <div class="sec"><span class="lg">Seuils de réussite</span><div class="pad"><div class="seuils">
+      <span>Très facile 5+</span><span>Facile 7+</span><span>Moyen 9+</span><span>Difficile 11+</span><span>Très difficile 13+</span><span>Héroïque 15+</span>
+    </div><div style="margin-top:6px;font-size:11px">2D6 + compétence &ge; seuil &middot; Double 1 = échec critique &middot; Double 6 = réussite critique</div></div></div>
+    </body></html>`;
+
+    const w=window.open("","_blank");
+    if(!w){ alert("Autorise les pop-ups pour imprimer la fiche."); return; }
+    w.document.open(); w.document.write(html); w.document.close(); w.focus();
+    setTimeout(()=>{ try{ w.print(); }catch(e){} }, 500);
+  }
+
+  document.addEventListener("DOMContentLoaded",()=>{
+    load(); applyState();
+
+    $("#addComp").onclick=()=>{ state.competences.push({nom:"",val:0,checked:false,marks:[]}); renderComp(); save(); };
+    $("#addObj").onclick=()=>{ state.objets.push({nom:"",faces:6,prix:""}); renderObj(); save(); };
+
+    $("#seuils").querySelectorAll(".seuil-pill").forEach(p=>{
+      p.onclick=()=>selectSeuil(parseInt(p.dataset.v));
+    });
+
+    $("#btnApt").onclick=lancerTest;
+    $("#btnCran").onclick=jetCran;
+    $("#btnMain").onclick=()=>hit(4,"Mains nues");
+
+    $("#photoBox").onclick=()=>$("#photoInput").click();
+    $("#photoBox").onkeydown=e=>{ if(e.key==="Enter"||e.key===" "){e.preventDefault();$("#photoInput").click();} };
+    $("#photoInput").onchange=e=>{ const f=e.target.files[0]; if(!f)return;
+      const fr=new FileReader(); fr.onload=()=>{ setPhoto(fr.result); save(); }; fr.readAsDataURL(f); };
+
+    $("#exportBtn").onclick=exportDossier;
+    $("#printBtn").onclick=imprimerFiche;
+    $("#resetBtn").onclick=()=>{
+      if(!confirm("Réinitialiser le dossier ? Les modifications enregistrées dans ce navigateur seront perdues et la fiche d'exemple reviendra.")) return;
+      try{ localStorage.removeItem(KEY); }catch(e){}
+      location.reload();
     };
+    $("#importBtn").onclick=()=>$("#importInput").click();
+    $("#importInput").onchange=e=>{ if(e.target.files[0]) importDossier(e.target.files[0]); };
 
-    // Recopie les saisies du DOM vers l'état avant chaque re-rendu
-    function syncComps() {
-        ['corps', 'esprit'].forEach(key => {
-            const c = document.getElementById(blockMeta[key].id);
-            const names = Array.from(c.querySelectorAll('.comp-name'));
-            const vals = Array.from(c.querySelectorAll('.comp-val'));
-            for (let i = 0; i < comps[key].length; i++) {
-                if (names[i]) comps[key][i].name = names[i].value;
-                if (vals[i]) comps[key][i].val = vals[i].value;
-            }
-        });
-    }
-    function totalPoints() {
-        let t = 0;
-        ['corps', 'esprit'].forEach(k => comps[k].forEach(c => { t += parseInt(c.val) || 0; }));
-        return t;
-    }
-    function updateBudget() {
-        const t = totalPoints();
-        const counter = document.getElementById('comp-budget');
-        counter.textContent = `${t} / ${budget}`;
-        counter.classList.toggle('over', t > budget);
-        counter.classList.toggle('done', t === budget);
-        document.getElementById('comp-check').style.display = (t === budget) ? 'flex' : 'none';
-    }
-    function renderBlock(key) {
-        const m = blockMeta[key];
-        let html = `<div class="stat-header ${m.hdr}">${m.label}<span class="stat-points">+${statValue[key]}</span></div>`;
-        html += '<div class="comp-list">';
-        if (comps[key].length === 0) {
-            html += '<div class="comp-empty">Aucune compétence.</div>';
-        } else {
-            comps[key].forEach((it, i) => {
-                html += `<div class="comp-row">`
-                     + `<input type="text" class="comp-name" placeholder="Compétence" value="${escapeHtml(it.name)}">`
-                     + `<span class="comp-plus">+</span>`
-                     + `<input type="number" class="comp-val" min="0" value="${escapeHtml(it.val)}" oninput="onCompChange()">`
-                     + `<button class="del-btn" onclick="delComp('${key}', ${i})" title="Retirer la compétence">✗</button>`
-                     + `</div>`;
-            });
-        }
-        html += '</div>';
-        html += `<button class="add-btn comp-add" onclick="addComp('${key}')">+ Ajouter une compétence</button>`;
-        document.getElementById(m.id).innerHTML = html;
-    }
-    function renderBulletin() {
-        renderBlock('corps');
-        renderBlock('esprit');
-        updateBudget();
-    }
-    // Mise à jour du budget en direct pendant la saisie (sans re-rendu, garde le focus)
-    function onCompChange() {
-        syncComps();
-        updateBudget();
-    }
-    function addComp(key) {
-        syncComps();
-        comps[key].push({ name: '', val: '0' });
-        renderBulletin();
-    }
-    function delComp(key, idx) {
-        syncComps();
-        comps[key].splice(idx, 1);
-        renderBulletin();
-    }
-
-    // Ajout dynamique d'Objet dans le Sac à Dos
-    function addInventoryRow() {
-        const tbody = document.getElementById('inventory-body');
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-            <td><input type="text" placeholder="Nouvel objet"></td>
-            <td>
-                <select>
-                    <option>-</option><option>D4</option><option>D6</option><option>D8</option><option>D10</option><option>D12</option>
-                </select>
-            </td>
-            <td><input type="text" placeholder="..."></td>
-            <td style="text-align: center;"><button class="del-btn" onclick="this.closest('tr').remove()" title="Jeter l'objet">✗</button></td>
-        `;
-        tbody.appendChild(tr);
-    }
-
-    // Affichage initial des PV
-    renderPV();
-    // Affichage initial du bulletin (vide tant qu'aucun stéréotype)
-    renderBulletin();
-    // Affichage initial du niveau de stress
-    renderStress();
+    drawDie($("#dieA"),1); drawDie($("#dieB"),1);
+  });
+})();
 </script>
-
 </body>
 </html>
