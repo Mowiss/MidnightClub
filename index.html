@@ -21,20 +21,48 @@
     min-height:100vh;padding:26px 14px 60px;line-height:1.35;
   }
 
+  .folder-wrap{max-width:920px;margin:0 auto;position:relative}
   .folder{
-    max-width:920px;margin:0 auto;position:relative;background:var(--folder);
+    position:relative;z-index:1;background:var(--folder);
     border-radius:4px 14px 4px 4px;padding:14px 14px 18px;
     box-shadow:0 22px 50px -18px #000, inset 0 1px 0 rgba(255,255,255,.18);
   }
-  .tab{
-    position:absolute;top:-26px;left:26px;background:var(--folder);padding:7px 26px 9px;
-    border-radius:10px 10px 0 0;font-family:"Oswald","Arial Narrow",sans-serif;font-weight:600;
-    letter-spacing:.14em;font-size:13px;color:#3a2e10;box-shadow:0 -3px 8px -4px #000;
-  }
+  .tabs{position:absolute;top:-26px;left:22px;display:flex}
+  .tab{position:relative;z-index:3;background:var(--folder);padding:7px 22px 12px;border-radius:10px 10px 0 0;
+    font-family:"Oswald","Arial Narrow",sans-serif;font-weight:600;letter-spacing:.12em;font-size:13px;
+    color:#3a2e10;box-shadow:0 -3px 8px -4px #000;cursor:pointer;line-height:1.1;user-select:none}
+  .tab+.tab{margin-left:-12px;padding-left:30px}
   .tab b{color:#1f1908}
+  .tab.inactive{z-index:0;background:var(--folder-dark);color:#2a2410;transform:translateY(6px);box-shadow:none}
+  .tab.inactive b{color:#2a2410}
+  .sheet[hidden]{display:none}
+  /* ----- onglet règles ----- */
+  .r-doc{font-size:14px}
+  .r-doc .r-lead{font-size:15px}
+  .r-doc p{margin:0 0 11px;line-height:1.55}
+  .r-doc ul{margin:0 0 11px;padding-left:20px}
+  .r-doc li{margin:4px 0;line-height:1.5}
+  .r-doc h3{font-family:"Oswald",sans-serif;font-weight:600;letter-spacing:.06em;font-size:13px;text-transform:uppercase;margin:14px 0 6px;color:var(--ink)}
+  .r-doc .small{font-size:12px;color:var(--ink-soft)}
+  .r-doc .r-tbl{width:100%;border-collapse:collapse;margin:8px 0 12px;font-size:13px;background:rgba(255,255,255,.25)}
+  .r-doc .r-tbl th,.r-doc .r-tbl td{border:1px solid rgba(42,38,32,.5);padding:6px 9px;text-align:left}
+  .r-doc .r-tbl th{font-family:"Oswald",sans-serif;font-weight:600;letter-spacing:.05em;font-size:11px;text-transform:uppercase;background:var(--ink);color:var(--paper)}
+  .r-doc .r-tbl td.c,.r-doc .r-tbl th.c{text-align:center}
+  .r-doc .die{font-family:"Oswald",sans-serif;font-weight:700;color:var(--stamp-red)}
+  .r-doc .r-mot{background:rgba(255,253,244,.6);border:1px solid rgba(60,45,20,.3);border-left:4px solid var(--stamp-red);padding:11px 14px;margin:14px 0}
+  .r-doc .r-mot .mh{font-family:"Oswald",sans-serif;font-weight:600;letter-spacing:.1em;font-size:10px;text-transform:uppercase;color:var(--stamp-red);margin-bottom:3px}
+  .r-doc .r-mot .mt{font-family:"Caveat",cursive;font-size:21px;line-height:1.15;color:var(--stamp-blue)}
+  .r-doc .r-mot .sig{font-family:"Caveat",cursive;font-size:17px;color:var(--stamp-red);text-align:right}
+  .r-doc .r-flag{border:1.5px dashed var(--stamp-red);background:rgba(156,42,33,.06);border-radius:3px;padding:11px 13px;margin:12px 0}
+  .r-doc .r-flag .fh{font-family:"Oswald",sans-serif;font-weight:700;letter-spacing:.08em;font-size:11px;text-transform:uppercase;color:var(--stamp-red);margin-bottom:5px}
+  .r-doc .rok{color:var(--green-ok);font-weight:700}
+  .r-doc .req{color:#cf8a1e;font-weight:700}
+  .r-doc .rko{color:var(--stamp-red);font-weight:700}
+  .r-doc .rcrit-ok{color:#7b3fe4;font-weight:700}
+  .r-doc .rcrit-ko{color:#7c0d09;font-weight:700}
 
   .sheet{
-    position:relative;overflow:hidden;background:var(--paper);
+    position:relative;z-index:1;overflow:hidden;background:var(--paper);
     background-image:
       radial-gradient(circle at 88% 12%, rgba(120,90,40,.10) 0 9px, transparent 11px),
       radial-gradient(ellipse at 50% 50%, transparent 60%, rgba(60,45,20,.10) 100%);
@@ -70,6 +98,9 @@
     border-bottom:1px dotted var(--line);padding:1px 4px 2px;min-width:40px}
   .field:focus{border-bottom-color:var(--stamp-blue);background:rgba(52,80,110,.06)}
   .field::placeholder{color:rgba(80,70,55,.5);font-style:italic}
+  .money-box{display:inline-flex;align-items:baseline;gap:4px;font-family:"Oswald",sans-serif;font-weight:600;font-size:13px;color:var(--ink-soft)}
+  .money{width:44px;text-align:right;font-family:"Oswald",sans-serif;font-weight:600}
+  #argentC{width:36px}
 
   .grid{display:grid;gap:16px}
   .two{grid-template-columns:1fr 168px}
@@ -268,13 +299,25 @@
     .grade.r-critfail .grade-num::before,.grade.r-critfail .grade-num::after{animation:none}
     .grade-ring path{stroke-dashoffset:0}
   }
+  @media print{
+    body{background:#fff;padding:0}
+    .tabs{display:none}
+    .folder{box-shadow:none;background:#fff;padding:0;border-radius:0}
+    .sheet{box-shadow:none;border:none;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+    .sheet::before,.sheet::after{display:none}
+    .confid{display:none}
+    .r-toolbar,#sheetDossier .toolbar,.rollbar{display:none}
+  }
 </style>
 </head>
 <body>
-<div class="folder">
-  <div class="tab">DOSSIER N° <b id="dossierNo" class="field" contenteditable="true" spellcheck="false">SC-1984-███</b></div>
-
-  <div class="sheet">
+<div class="folder-wrap">
+  <div class="tabs">
+    <div class="tab" id="tabDossier">DOSSIER N° <b id="dossierNo" class="field" contenteditable="true" spellcheck="false">SC-1984-███</b></div>
+    <div class="tab inactive" id="tabRegles">REGLE_DU_JEU</div>
+  </div>
+  <div class="folder">
+  <div class="sheet" id="sheetDossier">
     <div class="confid">CONFIDENTIEL</div>
 
     <header class="masthead">
@@ -302,6 +345,8 @@
         <div class="rowline">
           <span class="lbl">Classe</span><input class="field" id="classe" placeholder="Terminale B" style="flex:0 1 150px">
           <span class="lbl">Régime</span><input class="field" id="regime" placeholder="Externe" style="flex:0 1 120px">
+          <span class="lbl">Argent de poche</span>
+          <span class="money-box"><input class="field money" id="argentD" placeholder="0" inputmode="numeric"> $ <input class="field money" id="argentC" placeholder="00" inputmode="numeric"> ¢</span>
         </div>
         <div class="pv-block" style="margin-top:12px">
           <div class="pv-head"><span class="lbl">Points de vie</span><span class="pvnum" id="pvnum">10 / 10</span></div>
@@ -395,6 +440,152 @@
       <input type="file" id="importInput" accept="application/json" hidden>
     </div>
   </div>
+
+  <!-- ===================== ONGLET RÈGLES ===================== -->
+  <div class="sheet" id="sheetRegles" hidden>
+    <div class="confid">RÈGLEMENT</div>
+    <div class="r-doc">
+      <header class="masthead">
+        <h1 class="school">Midnight Club — Règle du jeu</h1>
+        <div class="sub-row"><span>Lycée de Shadow Creek · Règlement intérieur</span><span>Année scolaire 1984–1985</span></div>
+      </header>
+
+      <div class="r-mot">
+        <div class="mh">Mot de la vie scolaire</div>
+        <div class="mt">« Le règlement n'est pas là pour vous protéger. Il décrit ce qui vous arrive. »</div>
+        <div class="sig">— La Direction</div>
+      </div>
+
+      <fieldset class="frame" style="margin-bottom:16px">
+        <legend>Préambule</legend>
+        <p class="r-lead">Shadow Creek, automne <strong>1984</strong>. Le jour, un lycée ordinaire ; la nuit, quelque chose d'autre se réveille en ville. Vous incarnez des <strong>élèves</strong> que rien ne préparait à ça. Tout le jeu tient sur deux dés à six faces et cette fiche-dossier.</p>
+      </fieldset>
+
+      <fieldset class="frame" style="margin-bottom:16px">
+        <legend>Article 1 — Créer son élève</legend>
+        <p>On remplit la fiche dans cet ordre :</p>
+        <ul>
+          <li><strong>État civil</strong> — nom, prénom, naissance, adresse, classe, régime, argent de poche.</li>
+          <li><strong>Stéréotype</strong> — un archétype qui fixe l'argent de départ et oriente les compétences.</li>
+          <li><strong>Compétences</strong> — elles seules décident des réussites.</li>
+          <li><strong>Points de vie</strong> — 10 par défaut.</li>
+          <li><strong>Cran</strong> — démarre à 0 ; c'est ensuite le meneur qui le fait évoluer (Article 5).</li>
+        </ul>
+        <h3>Les six stéréotypes</h3>
+        <p>Chaque élève dispose des <strong>points de compétence</strong> de son stéréotype, à <strong>répartir librement</strong> : 1 point dans plein de compétences, ou tout dans une seule — comme il veut. Le stéréotype fixe aussi l'argent de départ et un <strong>atout</strong>.</p>
+        <table class="r-tbl">
+          <thead><tr><th>Stéréotype</th><th class="c">Pts compétence</th><th class="c">Argent</th><th>Atout</th></tr></thead>
+          <tbody>
+            <tr><td>👟 Sportif</td><td class="c">4</td><td class="c">10 $</td><td>Commence avec un item D6</td></tr>
+            <tr><td>🧠 Intello</td><td class="c">4</td><td class="c">10 $</td><td>Commence avec un item de soin</td></tr>
+            <tr><td>🎩 Nanti</td><td class="c">3</td><td class="c">20 $</td><td>Commence avec plus d'argent</td></tr>
+            <tr><td>🛹 Gosse des rues</td><td class="c">6</td><td class="c">5 $</td><td>Commence avec plus de compétences</td></tr>
+            <tr><td>🕷️ Gothique</td><td class="c">3</td><td class="c">10 $</td><td>Terreur bloquée à −4</td></tr>
+            <tr><td>💾 Geek</td><td class="c">5</td><td class="c">10 $</td><td>Courage bloqué à +4</td></tr>
+          </tbody>
+        </table>
+      </fieldset>
+
+      <fieldset class="frame" style="margin-bottom:16px">
+        <legend>Article 2 — Faire un jet</legend>
+        <p class="r-lead" style="font-size:15px"><strong>2D6 + compétence, à valeur ≥ seuil pour réussir.</strong></p>
+        <p>Quand l'issue est incertaine, le meneur annonce un seuil. Le joueur lance 2D6, ajoute la valeur de la compétence concernée, compare au seuil. <em>La compétence — et rien d'autre — décide réussite/échec.</em> L'arme ne sert qu'aux dégâts (Article 6).</p>
+      </fieldset>
+
+      <fieldset class="frame" style="margin-bottom:16px">
+        <legend>Article 3 — Les seuils</legend>
+        <table class="r-tbl">
+          <thead><tr><th>Difficulté</th><th class="c">Seuil</th><th>Exemple</th></tr></thead>
+          <tbody>
+            <tr><td>Très facile</td><td class="c"><span class="die">5 +</span></td><td>Sous pression, sans plus.</td></tr>
+            <tr><td>Facile</td><td class="c"><span class="die">7 +</span></td><td>Action courante qui peut foirer.</td></tr>
+            <tr><td>Moyen</td><td class="c"><span class="die">9 +</span></td><td>Le seuil par défaut.</td></tr>
+            <tr><td>Difficile</td><td class="c"><span class="die">11 +</span></td><td>Savoir-faire et un peu de chance.</td></tr>
+            <tr><td>Très difficile</td><td class="c"><span class="die">13 +</span></td><td>Au bord du possible.</td></tr>
+            <tr><td>Héroïque</td><td class="c"><span class="die">15 +</span></td><td>Digne d'une légende de lycée.</td></tr>
+          </tbody>
+        </table>
+      </fieldset>
+
+      <fieldset class="frame" style="margin-bottom:16px">
+        <legend>Article 4 — Réussites & échecs</legend>
+        <p>On lit le résultat comme une copie corrigée :</p>
+        <table class="r-tbl">
+          <thead><tr><th>Jet</th><th>Verdict</th><th>Effet</th></tr></thead>
+          <tbody>
+            <tr><td class="c"><strong>Double 6</strong></td><td class="rcrit-ok">Réussite critique</td><td>Une <strong>action digne d'un film</strong> : bonus spectaculaire.</td></tr>
+            <tr><td class="c">Total &gt; seuil</td><td class="rok">Réussite</td><td>L'action passe, proprement.</td></tr>
+            <tr><td class="c">Total = seuil</td><td class="req">Égalité</td><td><strong>À l'interprétation du meneur</strong> (réussite avec accroc, à moitié, oui-mais…).</td></tr>
+            <tr><td class="c">Total &lt; seuil</td><td class="rko">Échec</td><td>Raté, on encaisse.</td></tr>
+            <tr><td class="c"><strong>Double 1</strong></td><td class="rcrit-ko">Échec critique</td><td><strong>Ça foire grave</strong> : risque pour les potes ou l'équipement.</td></tr>
+          </tbody>
+        </table>
+        <p class="small">Les doubles priment toujours sur le total.</p>
+      </fieldset>
+
+      <fieldset class="frame" style="margin-bottom:16px">
+        <legend>Article 5 — Le Cran</legend>
+        <p>Le <strong>Cran</strong> va de <strong>−5 (Terreur)</strong> à <strong>+5 (Courage)</strong>, 0 au centre. Ce n'est pas gagné à la création : c'est une <strong>valeur arbitraire que le meneur fait évoluer selon l'ambiance</strong>. Il mesure ce que le perso <strong>a « le cran » de tenter</strong>.</p>
+        <p>Quand l'action exige du courage pur, on fait un <strong>Jet de Cran : 2D6 + Cran vs seuil</strong>. Cran négatif = malus (la peur paralyse), positif = bonus (l'élan porte). À −5, le meneur peut décider que le perso <em>n'ose tout simplement pas</em>.</p>
+        <div class="r-mot">
+          <div class="mh">Mot de la vie scolaire</div>
+          <div class="mt">« Le courage ne se note pas en début d'année. Il se gagne et se perd dans le couloir, à 23 h. »</div>
+          <div class="sig">— Le C.P.E.</div>
+        </div>
+      </fieldset>
+
+      <fieldset class="frame" style="margin-bottom:16px">
+        <legend>Article 6 — Combat & dégâts</legend>
+        <ul>
+          <li><strong>Initiative circonstancielle</strong> — pas de jet : le meneur décide l'ordre selon la situation.</li>
+          <li><strong>Toucher</strong> — jet d'aptitude (Bagarre, Tir…) contre un seuil.</li>
+          <li><strong>Dégâts</strong> — sur une réussite, on lance le <strong>dé de qualité de l'arme</strong> et on le retire aux PV. À mains nues : 1D4.</li>
+        </ul>
+        <p class="small">Pas de tour rigide ni de cases : on décrit, on tranche, on enchaîne. Les critiques s'appliquent aussi en combat.</p>
+      </fieldset>
+
+      <fieldset class="frame" style="margin-bottom:16px">
+        <legend>Article 7 — Équipement & argent</legend>
+        <p>Les objets se règlent sur leur <strong>qualité</strong> : meilleure la facture, plus gros le dé de dégâts.</p>
+        <table class="r-tbl">
+          <thead><tr><th>Qualité</th><th class="c">Dé</th><th class="c">Prix neuf</th></tr></thead>
+          <tbody>
+            <tr><td>Mains nues</td><td class="c"><span class="die">D4</span></td><td class="c">—</td></tr>
+            <tr><td>Rudimentaire</td><td class="c"><span class="die">D6</span></td><td class="c">3 $</td></tr>
+            <tr><td>Commun</td><td class="c"><span class="die">D8</span></td><td class="c">5 $</td></tr>
+            <tr><td>Pro</td><td class="c"><span class="die">D10</span></td><td class="c">8 $</td></tr>
+            <tr><td>Ultime</td><td class="c"><span class="die">D12</span></td><td class="c">10 $</td></tr>
+          </tbody>
+        </table>
+        <p>Chaque objet va dans le <strong>sac à dos</strong> (nom, dé, prix). Le bouton <strong>HIT !</strong> lance ses dégâts.</p>
+      </fieldset>
+
+      <fieldset class="frame" style="margin-bottom:16px">
+        <legend>Article 8 — PV, soins & blessures</legend>
+        <p>Chaque élève a <strong>10 points de vie</strong>. La récupération est <strong>narrative</strong>, comme dans tout JdR : on mange, on boit, on dort, on pose un pansement — le meneur rend les PV selon le soin. À <strong>0 PV</strong>, le perso est hors de combat ; le meneur décide de la suite.</p>
+      </fieldset>
+
+      <fieldset class="frame" style="margin-bottom:16px">
+        <legend>Article 9 — Progression</legend>
+        <p>Chaque compétence a un <strong>relevé de 10 essais</strong>. Chaque jet d'aptitude la coche : <span class="rok">✓</span> sur réussite, <span class="rko">✗</span> sur échec. À 10 cases, si la <strong>majorité est verte (≥ 6 ✓)</strong>, la compétence gagne <strong>+1</strong> et le relevé repart à zéro ; sinon il s'efface et repart de la 1ʳᵉ colonne.</p>
+      </fieldset>
+
+      <fieldset class="frame">
+        <legend>Article 10 — Côté meneur</legend>
+        <ul>
+          <li><strong>Le Cran est ton instrument</strong> : monte-le/descends-le pour faire respirer ou suffoquer la table.</li>
+          <li><strong>L'égalité t'appartient</strong> : ta marge pour une réussite teintée de complication.</li>
+          <li><strong>Les critiques sont des moments</strong> : double 6 = image de cinéma ; double 1 = fais payer l'équipement ou les liens, pas la mort gratuite.</li>
+          <li><strong>Seuils par défaut</strong> : 9+ quand tu hésites ; 13+/15+ pour les exploits.</li>
+        </ul>
+      </fieldset>
+
+      <div class="r-toolbar" style="display:flex;justify-content:flex-end;margin-top:16px">
+        <button class="btn ghost" id="printRulesBtn">🖨 Imprimer les règles</button>
+      </div>
+    </div>
+  </div>
+  </div>
 </div>
 
 <script>
@@ -406,10 +597,10 @@
 
   let state={
     dossierNo:"SC-1984-███", school:"SHADOW CREEK HIGH SCHOOL", annee:"1984 – 1985",
-    nom:"RAYNOLD", prenom:"Timmy", naissance:"29 / 11 / 1970", lieu:"Arkham", adresse:"", classe:"4e", regime:"1/2 pension",
+    nom:"RAYNOLD", prenom:"Timmy", naissance:"29 / 11 / 1970", lieu:"Arkham", adresse:"", classe:"4e", regime:"1/2 pension", argentD:"", argentC:"",
     pvMax:10, pvCur:10, cran:0, photo:"data:image/jpeg;base64,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", seuil:9,
     competences:[ {nom:"Discrétion",val:1,checked:false,marks:[]}, {nom:"Bagarre",val:0,checked:false,marks:[]}, {nom:"Sang-froid",val:0,checked:false,marks:[]} ],
-    objets:[ {nom:"Batte de baseball",faces:8,prix:"50 $"} ]
+    objets:[ {nom:"Batte de baseball",faces:8,prix:"5 $"} ]
   };
 
   const PIPS={1:[[50,50]],2:[[27,27],[73,73]],3:[[27,27],[50,50],[73,73]],
@@ -620,7 +811,7 @@
     bindField("dossierNo","dossierNo",true);
     bindField("school","school",true);
     bindField("annee","annee",true);
-    ["nom","prenom","naissance","lieu","adresse","classe","regime"].forEach(k=>bindField(k,k,false));
+    ["nom","prenom","naissance","lieu","adresse","classe","regime","argentD","argentC"].forEach(k=>bindField(k,k,false));
     if(state.photo) setPhoto(state.photo);
     renderHearts(); renderCran(); renderComp(); renderObj(); selectSeuil(state.seuil);
   }
@@ -692,7 +883,7 @@
       <div class="field"><b>Nom :</b> ${orLine(s.nom,120)} &nbsp; <b>Prénom :</b> ${orLine(s.prenom,120)}</div>
       <div class="field"><b>Né(e) le :</b> ${orLine(s.naissance,110)} &nbsp; <b>à</b> ${orLine(s.lieu,120)}</div>
       <div class="field"><b>Adresse :</b> ${orLine(s.adresse,250)}</div>
-      <div class="field"><b>Classe :</b> ${orLine(s.classe,90)} &nbsp; <b>Régime :</b> ${orLine(s.regime,90)}</div>
+      <div class="field"><b>Classe :</b> ${orLine(s.classe,90)} &nbsp; <b>Régime :</b> ${orLine(s.regime,90)} &nbsp; <b>Argent de poche :</b> <span class="line" style="min-width:30px">${esc(s.argentD)}</span> $ <span class="line" style="min-width:24px">${esc(s.argentC)}</span> ¢</div>
       <div class="field"><b>Points de vie</b><div class="hearts">${hearts}</div></div>
       <div class="field"><b>Cran</b> &nbsp;<span style="font-size:10px">(−5 Terreur &middot; +5 Courage)</span><div class="cran">${cran}</div></div>
     </div><div class="photo">${s.photo?`<img src="${s.photo}">`:"PHOTO"}</div></div></div>
@@ -709,6 +900,15 @@
     if(!w){ alert("Autorise les pop-ups pour imprimer la fiche."); return; }
     w.document.open(); w.document.write(html); w.document.close(); w.focus();
     setTimeout(()=>{ try{ w.print(); }catch(e){} }, 500);
+  }
+
+  function showTab(which){
+    const dos = which!=="regles";
+    document.getElementById("sheetDossier").hidden=!dos;
+    document.getElementById("sheetRegles").hidden=dos;
+    document.getElementById("tabDossier").classList.toggle("inactive",!dos);
+    document.getElementById("tabRegles").classList.toggle("inactive",dos);
+    window.scrollTo(0,0);
   }
 
   document.addEventListener("DOMContentLoaded",()=>{
@@ -732,6 +932,9 @@
 
     $("#exportBtn").onclick=exportDossier;
     $("#printBtn").onclick=imprimerFiche;
+    $("#tabDossier").onclick=()=>showTab("dossier");
+    $("#tabRegles").onclick=()=>showTab("regles");
+    $("#printRulesBtn").onclick=()=>{ showTab("regles"); setTimeout(()=>window.print(),120); };
     $("#resetBtn").onclick=()=>{
       if(!confirm("Réinitialiser le dossier ? Les modifications enregistrées dans ce navigateur seront perdues et la fiche d'exemple reviendra.")) return;
       try{ localStorage.removeItem(KEY); }catch(e){}
